@@ -47,7 +47,7 @@ def discovery():
         for ip in newIPs:
             f.write(f"\n{ip}")
             loggingF(2, f"Adding {ip} to the inventory")
-    
+
     # Define the ansible process for installing devices
 
     ansibleProcess = (
