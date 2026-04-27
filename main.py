@@ -24,7 +24,7 @@ def discovery():
     ether = Ether(dst="ff:ff:ff:ff:ff:ff")
     packet = ether/ARP(pdst=netRange)
     
-    result = srp(packet, timeout=3, verbose=0)[0]
+    result = srp(packet, timeout=3, verbose=0, iface="enp0s8")[0]
 
     detectedIPs = [received.psrc for sent, received in result]
     oldIPs = getIP()
