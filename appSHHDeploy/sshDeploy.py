@@ -45,10 +45,12 @@ def sshDeploy():
 
     command = [
         "ansible-playbook",
+        "-vvvv",
         "-i", inv,
         sshPlaybook,
         "-u", remote_user,
-        "-k"
+        "-k",
+        "--ssh-common-args=-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
     ]
 
     try:
