@@ -21,10 +21,7 @@ checkRoot()
 def discovery():
 
     # Variables and Packet Set up
-    hostsPath = configGet('paths', 'ansible_hosts')
     netRange = configGet('network', 'subnet')
-    vault_file = configGet('vault', 'vault_file')
-    vault_pass_path = configGet('vault', 'vault_pass_path')
     user = configGet('users', 'remote_user')
 
     ether = Ether(dst="ff:ff:ff:ff:ff:ff")
@@ -38,7 +35,7 @@ def discovery():
         'all': {
             'hosts': detectedIPs,
             'vars': {
-                'ansible_user': configGet('users', 'remote_user'),
+                'ansible_user': user,
             }
         },
         '_meta': {

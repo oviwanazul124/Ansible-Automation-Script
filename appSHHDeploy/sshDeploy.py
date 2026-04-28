@@ -45,7 +45,6 @@ def sshDeploy():
 
     command = [
         "ansible-playbook",
-        "-vvvv",
         "-i", inv,
         sshPlaybook,
         "-u", remote_user,
