@@ -4,8 +4,11 @@
 
 import os
 import subprocess
+import sys
 
 # Custom Imports
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from utils.logger.logger import loggingF
 from utils.configR.configR import configGet
