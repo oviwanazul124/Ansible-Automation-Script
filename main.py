@@ -26,3 +26,6 @@ def menu():
             input("\nPress Enter to continue...")
         elif opt == "2":
             break
+
+    if __name__ == "__main__":
+        menu()
