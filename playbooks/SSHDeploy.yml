@@ -1,0 +1,10 @@
+---
+- name: SSH Deploy
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Deploy SSH Public Key
+      authorized_key:
+        user: "{{ ansible_user }}"
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

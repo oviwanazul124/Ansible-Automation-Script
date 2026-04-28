@@ -2,7 +2,12 @@
 
 import subprocess
 import os
+
+# Custom Imports
+
 from utils.logger.logger import loggingF
+from utils.checkPermission.chkPerm import checkPermission
+
 
 def clear():
     subprocess.run(["clear"])
@@ -11,17 +16,7 @@ def inv():
     print("--- Inventory Script ---")
     invPath = os.path.join("appInv", "getInv.py")
 
-    if os.access(invPath, os.X_OK):
-        loggingF(2, "The script was found and is executable")
-    else:
-        loggingF(4, "The script was not found or is not executable")
-
-        try:
-                os.chmod(invPath, 0o755)
-                loggingF(2, "Permissions have been updated to make the script executable")
-        except Exception as e:
-                loggingF(4, f"Failed to update permissions: {e}")
-                print("Error with executing the app. Please check the details on the logs")
+    checkPermission(invPath)
 
     result = subprocess.run(["ansible-inventory", "-i", invPath, "--list"], capture_output=True, text=True)
     if result.returncode != 0:
