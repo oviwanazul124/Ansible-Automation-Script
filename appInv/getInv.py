@@ -25,7 +25,6 @@ def discovery():
     netRange = configGet('network', 'subnet')
     vault_file = configGet('vault', 'vault_file')
     vault_pass_path = configGet('vault', 'vault_pass_path')
-    ssh_pub_key = configGet('SSH', 'ssh_pub_key')
     user = configGet('users', 'remote_user')
 
     ether = Ether(dst="ff:ff:ff:ff:ff:ff")
