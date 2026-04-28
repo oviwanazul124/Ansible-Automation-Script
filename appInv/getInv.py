@@ -3,8 +3,14 @@
 # Imports
 import json
 import sys
-from utils.configR.configR import configGet
+import os
 from scapy.all import ARP, Ether, srp
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# Custom Imports
+
+from utils.configR.configR import configGet
 from utils.logger.logger import loggingF
 from utils.checkRoot.checkRoot import checkRoot
 
