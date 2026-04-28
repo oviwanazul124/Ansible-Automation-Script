@@ -1,49 +1,28 @@
-#!/usr/bin/env python3
-
 # Imports
-import json
-import sys
-from utils.configR.configR import configGet
-from scapy.all import ARP, Ether, srp
-from utils.logger.logger import loggingF
-from utils.checkRoot.checkRoot import checkRoot
 
-# Check if the script is run as root
+import subprocess
+import os
 
-checkRoot()
+def clear():
+    subprocess.run(["clear"])
 
-def discovery():
+def inv():
+    print("--- Inventory Script ---")
+    invPath = os.path.join("appInv", "getInv.py")
+    result = subprocess.run(["ansible", "-i", invPath, "--list"], capture_output=True, text=True)
+    print(result.stdout)
 
-    # Variables and Packet Set up
-    hostsPath = configGet('paths', 'ansible_hosts')
-    netRange = configGet('network', 'subnet')
-    vault_file = configGet('vault', 'vault_file')
-    vault_pass_path = configGet('vault', 'vault_pass_path')
-    ssh_pub_key = configGet('SSH', 'ssh_pub_key')
-    user = configGet('users', 'remote_user')
+def menu():
+    while True:
+        clear()
+        print("--- Ansible Menu ---")
+        print("1. Run Inventory Script")
+        print("2. Exit")
 
-    ether = Ether(dst="ff:ff:ff:ff:ff:ff")
-    packet = ether/ARP(pdst=netRange)
-    
-    result = srp(packet, timeout=3, verbose=0, iface="enp0s8")[0]
+        opt = input("\n Select an option:")
 
-    detectedIPs = [received.psrc for sent, received in result]
-
-    inventory = {
-        'all': {
-            'hosts': detectedIPs,
-            'vars': {
-                'ansible_user': configGet('users', 'remote_user'),
-            }
-        },
-        '_meta': {
-            'hostvars': {}
-        }
-    }
-    return inventory
-
-if __name__ == "__main__":
-    if len(sys.argv) == 2 and sys.argv[1] == '--list':
-        print(json.dumps(discovery()))
-    else:
-        print(json.dumps({'all': {'hosts': []}}))
+        if opt == "1":
+            inv()
+            input("\nPress Enter to continue...")
+        elif opt == "2":
+            break
