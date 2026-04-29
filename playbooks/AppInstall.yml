@@ -1,0 +1,13 @@
+---
+- name: App Install
+  hosts: all
+  become: true
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+    - name: Install Required Packages
+      ansible.builtin.apt:
+        name:
+          - zabbix
+        state: present

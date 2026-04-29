@@ -35,7 +35,6 @@ def sshDeploy():
 
     # Getting paths for all of them
 
-
     inv = os.path.join("appInv", "getInv.py")
     checkPermission(inv)
     sshPlaybook = os.path.join("playbooks", "SSHDeploy.yml")
@@ -60,3 +59,4 @@ def sshDeploy():
 
     except subprocess.CalledProcessError as e:
         loggingF(4, f"Error running sshDeploy: {e}")
+        

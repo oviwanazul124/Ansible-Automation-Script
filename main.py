@@ -8,6 +8,7 @@ import os
 from utils.logger.logger import loggingF
 from utils.checkPermission.chkPerm import checkPermission
 from appSHHDeploy.sshDeploy import sshDeploy
+from appAptDeploy.aptDeploy import aptDeploy
 
 def clear():
     subprocess.run(["clear"])
@@ -31,7 +32,8 @@ def menu():
         print("--- Ansible Menu ---")
         print("1. Run Inventory Script")
         print("2. Deploy SSH key")
-        print("3. Exit")
+        print("3. Install Required Packages")
+        print("4. Exit")
 
         opt = input("\n Select an option:")
 
@@ -40,8 +42,11 @@ def menu():
             input("\nPress Enter to continue...")
         elif opt == "2":
             sshDeploy()
-            input("\nPress Enter to continue...")            
+            input("\nPress Enter to continue...")
         elif opt == "3":
+            aptDeploy()
+            input("\nPress Enter to continue...")
+        elif opt == "4":
             break
 
 if __name__ == "__main__":
