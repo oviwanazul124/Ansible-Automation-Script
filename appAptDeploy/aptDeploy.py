@@ -34,6 +34,7 @@ def aptDeploy():
         aptPlaybook,
         "-u", remote_user,
         "-k",
+        "-K",
         "--ssh-common-args=-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
     ]
 
