@@ -9,5 +9,5 @@
     - name: Install Required Packages
       ansible.builtin.apt:
         name:
-          - zabbix
+          - obs-studio
         state: present
