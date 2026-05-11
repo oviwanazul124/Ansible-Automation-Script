@@ -9,5 +9,6 @@
     - name: Install Required Packages
       ansible.builtin.apt:
         name:
-          - obs-studio
+          - "{{ packages }}"
         state: present
+        when: packages is defined

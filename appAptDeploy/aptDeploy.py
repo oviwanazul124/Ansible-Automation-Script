@@ -3,6 +3,7 @@
 import os
 import subprocess
 import sys
+import json
 
 # Custom Imports
 
@@ -12,7 +13,7 @@ from utils.logger.logger import loggingF
 from utils.configR.configR import configGet
 from utils.checkPermission.chkPerm import checkPermission
 
-def aptDeploy():
+def aptDeploy(packg):
 
     # Create enveiorement for host check
 
@@ -25,6 +26,7 @@ def aptDeploy():
     checkPermission(inv)
     aptPlaybook = os.path.join("playbooks", "AppInstall.yml")
     remote_user = configGet('users', 'remote_user')
+    packages = json.dumps({"packages": packg})
 
     # Ansible playbook to install the apps
 
@@ -33,6 +35,7 @@ def aptDeploy():
         "-i", inv,
         aptPlaybook,
         "-u", remote_user,
+        "-e", packages,
         "-k",
         "-K",
         "--ssh-common-args=-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
