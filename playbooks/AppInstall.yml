@@ -8,9 +8,8 @@
         update_cache: yes
     - name: Install Required Packages
       ansible.builtin.apt:
-        name:
-          - "{{ packages }}"
+        name: "{{ item }}"
         state: present
         update_cache: yes
-      loop: "{{ packages_list.split(',') }}"
+      loop: "{{ pkg_input.split(',') }}"
       

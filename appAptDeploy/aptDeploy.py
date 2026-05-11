@@ -26,7 +26,7 @@ def aptDeploy(packg):
     checkPermission(inv)
     aptPlaybook = os.path.join("playbooks", "AppInstall.yml")
     remote_user = configGet('users', 'remote_user')
-    packages = ",".joiun(packg)
+    packages_val = ",".join(packg)
 
     # Ansible playbook to install the apps
 
@@ -35,7 +35,7 @@ def aptDeploy(packg):
         "-i", inv,
         aptPlaybook,
         "-u", remote_user,
-        "-e", f"packages_list={packages}",
+        "-e", f"pkg_input={packages_val}",
         "-k",
         "-K",
         "--ssh-common-args=-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
