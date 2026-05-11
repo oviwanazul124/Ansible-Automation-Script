@@ -11,4 +11,6 @@
         name:
           - "{{ packages }}"
         state: present
-        when: packages is defined
+        update_cache: yes
+      loop: "{{ packages_list.split(',') }}"
+      
