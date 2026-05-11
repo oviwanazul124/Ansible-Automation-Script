@@ -8,6 +8,7 @@
         update_cache: yes
     - name: Install Required Packages
       ansible.builtin.apt:
-        name:
-          - obs-studio
+        name: "{{ item }}"
         state: present
+        update_cache: yes
+      loop: "{{ my_packages.split(',') | select('search', '.+') | list }}"

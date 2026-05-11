@@ -44,7 +44,8 @@ def menu():
             sshDeploy()
             input("\nPress Enter to continue...")
         elif opt == "3":
-            aptDeploy()
+            package = input("Enter the packages to install as example nginx, git: ")
+            aptDeploy(package)
             input("\nPress Enter to continue...")
         elif opt == "4":
             break
