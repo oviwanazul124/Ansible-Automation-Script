@@ -14,4 +14,4 @@
         name: "{{ item }}"
         state: present
         update_cache: yes
-      loop: "{{ my_packages.split(',') }}"
+      loop: "{{ my_packages.split(',') | select('search', '.+') | list }}"
