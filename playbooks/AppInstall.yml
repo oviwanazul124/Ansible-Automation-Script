@@ -3,6 +3,9 @@
   hosts: all
   become: true
   tasks:
+    - name: Check what Ansible received
+      ansible.builtin.debug:
+        msg: "The raw input is: {{ my_packages }}"
     - name: Update apt cache
       ansible.builtin.apt:
         update_cache: yes
@@ -11,4 +14,4 @@
         name: "{{ item }}"
         state: present
         update_cache: yes
-      loop: "{{ pkg_input.split(',') }}"
+      loop: "{{ my_packages.split(',') }}"
