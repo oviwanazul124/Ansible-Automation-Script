@@ -1,5 +1,6 @@
 from appAptDeploy.aptDeploy import aptDeploy
 from appSHHDeploy.sshDeploy import sshDeploy
+from utils.dependenciesInstaller.depenInst import install_dependencies
 from utils.getIP.getIP import inv
 
 menuMain = {
@@ -41,6 +42,11 @@ confMenu = {
     },
 
     "2": {
+        "label": "Install Dependencies",
+        "func": lambda: install_dependencies()
+    },
+
+    "3": {
         "label": "Back to Main",
         "func": lambda: None
     }
