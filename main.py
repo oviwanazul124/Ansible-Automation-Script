@@ -7,48 +7,70 @@ import os
 
 from utils.logger.logger import loggingF
 from utils.checkPermission.chkPerm import checkPermission
-from appSHHDeploy.sshDeploy import sshDeploy
-from appAptDeploy.aptDeploy import aptDeploy
+from ansible_menus import *
 
 def clear():
-    subprocess.run(["clear"])
+    subprocess.run(["clear" if os.name == "posix" else "cls"], shell=True)
 
-def inv():
-    print("--- Inventory Script ---")
-    invPath = os.path.join("appInv", "getInv.py")
-
-    checkPermission(invPath)
-
-    result = subprocess.run(["ansible-inventory", "-i", invPath, "--list"], capture_output=True, text=True)
-    if result.returncode != 0:
-        loggingF(4, result.stderr)
-        print("Error running inventory script. Check logs for details.")
-    else:
-        print(result.stdout)
-
-def menu():
+def menuWrapper(title, menuDict):
     while True:
         clear()
-        print("--- Ansible Menu ---")
-        print("1. Run Inventory Script")
-        print("2. Deploy SSH key")
-        print("3. Install Required Packages")
-        print("4. Exit")
+        print(f'--- {title} ---')
+        for key, value in menuDict.items():
+            print(f'{key}. {value['label']}')
+        
+        opt = input("\nSelect an option: ")
 
-        opt = input("\n Select an option:")
+        if opt in menuDict:
+            item = menuDict[opt]
 
-        if opt == "1":
-            inv()
-            input("\nPress Enter to continue...")
-        elif opt == "2":
-            sshDeploy()
-            input("\nPress Enter to continue...")
-        elif opt == "3":
-            package = input("Enter the packages to install as example nginx, git: ")
-            aptDeploy(package)
-            input("\nPress Enter to continue...")
-        elif opt == "4":
-            break
+            if item['label'] in ['Exit', 'Back to Main'] or item['func'] is None:
+                break
+
+            if item['func'] == 'debugMenu':
+                menuWrapper("Debug Menu", debugMenu)
+            elif item['func'] == 'confMenu':
+                menuWrapper("Configuration Menu", confMenu)
+            else:
+                item['func']()
+                input("\nPress Enter to continue...")
+        else:
+            print("Invalid option.Please try again.")
+            input()
+
+
+#def debug_menu():
+#    while True:
+#        clear()
+#        print("--- Debug Menu ---")
+#        print("1. Check devices actives in the network")
+#        print("2. Exit")
+
+    
+
+#def main_menu():
+#    while True:
+#        clear()
+#        print("--- Ansible Menu ---")
+#        print("1. Run Inventory Script")
+#        print("2. Deploy SSH key")
+#        print("3. Install Required Packages")
+#        print("4. Exit")
+#
+#        opt = input("\n Select an option:")
+#
+#        if opt == "1":
+#            inv()
+#            input("\nPress Enter to continue...")
+#        elif opt == "2":
+#            sshDeploy()
+#            input("\nPress Enter to continue...")
+#        elif opt == "3":
+#            package = input("Enter the packages to install as example nginx, git: ")
+#            aptDeploy(package)
+#            input("\nPress Enter to continue...")
+#        elif opt == "4":
+#            break
 
 if __name__ == "__main__":
-    menu()
+    menuWrapper("Ansible Menu", menuMain)

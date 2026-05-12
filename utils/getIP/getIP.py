@@ -1,19 +1,17 @@
 from utils.logger.logger import loggingF
-from utils.configR.configR import configGet
-from pathlib import Path
+import subprocess
+import os
+import utils.checkPermission.chkPerm as checkPermission
 
-def getIP():
+def inv():
+    print("--- Inventory Script ---")
+    invPath = os.path.join("appInv", "getInv.py")
 
-    path = configGet('paths', 'ansible_hosts')
+    checkPermission(invPath)
 
-    # Check if the file exists, if not create a log error and continue
-
-    if not Path(path).exists():
-        loggingF(4, "Ansible hosts file not found / or created")
-        return set()
-
-    # If file exists, 
-
-    with open(path, 'r') as f:
-        return {line.strip() for line in f if line.strip() and not line.startswith('[')}
-    
+    result = subprocess.run(["ansible-inventory", "-i", invPath, "--list"], capture_output=True, text=True)
+    if result.returncode != 0:
+        loggingF(4, result.stderr)
+        print("Error running inventory script. Check logs for details.")
+    else:
+        print(result.stdout)
