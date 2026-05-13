@@ -13,6 +13,8 @@ stateFile = "deployed_hosts.txt"
 
 def getDeployedHosts():
     if not os.path.exists(stateFile):
+            with open(stateFile, "w" as f):
+                pass
         return set()
     with open(stateFile, "r") as f:
         return set(line.strip() for line in f)
