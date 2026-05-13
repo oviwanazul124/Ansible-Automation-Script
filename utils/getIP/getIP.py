@@ -1,8 +1,7 @@
-from utils.logger.logger import loggingF
 import subprocess
 import os
-import utils.checkPermission.chkPerm as checkPermission
-
+from utils.checkPermission.chkPerm import checkPermission
+from utils.logger.logger import loggingF
 def inv():
     print("--- Inventory Script ---")
     invPath = os.path.join("appInv", "getInv.py")
