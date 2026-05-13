@@ -93,7 +93,7 @@ def monitorCycle():
                     if playbookRun(ssh_playbook, host, []):
                         if playbookRun(pkg_playbook, host):
                             loggingF(1, f"Guardando {host} en deployed_hosts.txt")
-                    saveDeployedHost(host)
+                    		saveDeployedHost(host)
                         else:
                             loggingF(4, f"Fallo en Package para {host}")
                     else:
