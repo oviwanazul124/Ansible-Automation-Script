@@ -44,7 +44,7 @@ def playbookRun(playbook_path, ip, extra_args=[]):
 	] + extra_args
 
 	if os.path.exists(vaultFile):
-        command.extend(["-e", f"@{vaultFile}"])
+		command.extend(["-e", f"@{vaultFile}"])
 
 	if os.path.exists(vaultPassFile):
 		command.append(f"--vault-password-file={vaultPassFile}")
