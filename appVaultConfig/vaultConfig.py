@@ -3,6 +3,10 @@ import getpass
 import subprocess
 
 def vaultConfig():
+
+    CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.dirname(CURRENT_DIR)
+
     vaultFile = os.path.join(root_dir, 'pass.yml')
     vaultPassFile = os.path.join(root_dir, '.vaultPass.txt')
 
