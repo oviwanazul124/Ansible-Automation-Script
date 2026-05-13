@@ -29,6 +29,7 @@ def playbookRun(playbook_path, ip, extra_args=[]):
 	invPath = os.path.join(root_dir, "appInv", "getInv.py")
 	remote_user = configGet('users', 'remote_user')
 	vaultPassFile = os.path.join(root_dir, '.vaultPass.txt')
+	vaultFile = os.path.join(root_dir, "pass.yml")
 
 	if not os.path.exists(os.path.join(root_dir, playbook_path)):
 		loggingF(4, f"Error: Playbook no encontrado en {playbook_path}")
