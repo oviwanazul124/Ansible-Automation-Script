@@ -17,59 +17,51 @@ def getDeployedHosts():
     with open(stateFile, "r") as f:
         return set(line.strip() for line in f)
 
-def saveDeployedHost(ip):
+def saveDeployedHost(ip): # Asegúrate de que el nombre coincida abajo
     with open(stateFile, "a") as f:
         f.write(f"{ip}\n")
-
-def playbookRun(playbook_path, ip, extra_args=[]):
-    invPath = os.path.join("appInv", "getInv.py")
-    remote_user = configGet('users', 'remote_user')
-    vaultPassFile = '.vaultPass.txt'
-
-    command = [
-        "ansible-playbook",
-        "-i", invPath,
-        playbook_path,
-        "-u", remote_user,
-        "--limit", ip,
-        f"--vault-password-file={vaultPassFile}"
-    ] + extra_args
-
-    env = os.environ.copy()
-    env["ANSIBLE_HOST_KEY_CHECKING"] = "False"
-
-    result = subprocess.run(command, env=env)
-    return result.returncode == 0
 
 def monitorCycle():
     loggingF(1, "Monitor Service Active: Waiting for new hosts...")
 
     ssh_playbook = os.path.join("playbooks", "SSHDeploy.yml")
     pkg_playbook = os.path.join("playbooks", "InstallPackages.yml")
+    invPath = os.path.join("appInv", "getInv.py")
 
     while True:
-        deployed = getDeployedHosts()
+        try:
+            deployed = getDeployedHosts()
 
-        invPath = os.path.join("appInv", "getInv.py")
-        res = subprocess.run(["ansible-inventory", "-i", invPath, "--list"], capture_output=True, text=True)
+            res = subprocess.run(
+                ["ansible-inventory", "-i", invPath, "--list"],
+                capture_output=True,
+                text=True,
+                timeout=60
+            )
 
-        if res.returncode == 0:
-            currentInv = json.loads(res.stdout).get('all', {}).get('hosts', [])
+            if res.returncode != 0:
+                loggingF(4, f"Error obteniendo inventario: {res.stderr}")
+            else:
+                inventory_data = json.loads(res.stdout)
+                currentInv = inventory_data.get('all', {}).get('hosts', [])
 
-            for host in currentInv:
-                if host not in deployed:
-                    loggingF(1, f"New device {host} found. Initializing deployment...")
+                for host in currentInv:
+                    if host not in deployed:
+                        loggingF(1, f"New device {host} found. Initializing...")
 
-                    if playbookRun(ssh_playbook, host, ["-k"]):
-                        loggingF(1, f"SSH Keys OK for {host}. Proceeding to package install.")
-
-                        if playbookRun(pkg_playbook, host):
-                            loggingF(1, f"Package installation successful for {host}")
-                            save_deployed_host(host)
+                        if playbookRun(ssh_playbook, host, ["-k"]):
+                            if playbookRun(pkg_playbook, host):
+                                loggingF(1, f"Success for {host}")
+                                saveDeployedHost(host)
+                            else:
+                                loggingF(4, f"Package FAILED for {host}")
                         else:
-                            loggingF(4, f"Package installation FAILED for {host}")
-                    else:
-                        loggingF(4, f"SSH Key deployment FAILED for {host}")
+                            loggingF(4, f"SSH FAILED for {host}")
+
+        except subprocess.TimeoutExpired:
+            loggingF(4, "Timeout: El inventario tardó demasiado en responder.")
+        except Exception as e:
+            loggingF(4, f"Error inesperado: {str(e)}")
 
         time.sleep(300)
 
