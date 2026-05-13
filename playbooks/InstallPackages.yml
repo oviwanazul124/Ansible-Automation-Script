@@ -1,0 +1,8 @@
+---
+- name: Playbook de prueba de conectividad
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Confirmar conexion
+      debug:
+        msg: "Conexión establecida con éxito con {{ inventory_hostname }}. Probando escritura de hosts..."
