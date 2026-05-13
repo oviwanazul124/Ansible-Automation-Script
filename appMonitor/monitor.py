@@ -55,6 +55,9 @@ def playbookRun(playbook_path, ip, extra_args=[]):
 
 	try:
 		result = subprocess.run(command, env=env, capture_output=True, text=True)
+		error_msg = result.stderr.strip() or result.stdout.strip()
+
+		loggingF(4, f"Ansible Playbook Error: {error_msg}")
 		if result.returncode != 0:
 
 			error_msg = result.stderr.strip() or result.stdout.strip()
