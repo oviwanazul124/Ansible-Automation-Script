@@ -4,12 +4,14 @@ import subprocess
 import time
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.abspath(os.path.join(current_dir, ".."))
+sys.path.append(root_dir)
 
 from utils.logger.logger import loggingF
 from utils.configR.configR import configGet
 
-stateFile = "deployed_hosts.txt"
+stateFile = os.path.join(root_dir, "deployed_hosts.txt")
 
 def getDeployedHosts():
     if not os.path.exists(stateFile):
@@ -23,61 +25,86 @@ def saveDeployedHost(ip):
     with open(stateFile, "a") as f:
         f.write(f"{ip}\n")
 
+def playbookRun(playbook_path, ip, extra_args=[]):
+    invPath = os.path.join(root_dir, "appInv", "getInv.py")
+    remote_user = configGet('users', 'remote_user')
+    vaultPassFile = os.path.join(root_dir, '.vaultPass.txt')
+
+    if not os.path.exists(os.path.join(root_dir, playbook_path)):
+        loggingF(4, f"Error: Playbook no encontrado en {playbook_path}")
+        return False
+
+    command = [
+        "ansible-playbook",
+        "-i", invPath,
+        os.path.join(root_dir, playbook_path),
+        "-u", remote_user,
+        "--limit", ip
+    ] + extra_args
+
+    if os.path.exists(vaultPassFile):
+        command.append(f"--vault-password-file={vaultPassFile}")
+
+    env = os.environ.copy()
+    env["ANSIBLE_HOST_KEY_CHECKING"] = "False"
+
+    try:
+        result = subprocess.run(command, env=env, capture_output=True, text=True)
+        if result.returncode != 0:
+            loggingF(4, f"Ansible Playbook Error: {result.stderr}")
+        return result.returncode == 0
+    except Exception as e:
+        loggingF(4, f"Excepción ejecutando playbook: {str(e)}")
+        return False
+
 def monitorCycle():
-	loggingF(1, "Monitor Service Active...")
 
-	current_dir = os.path.dirname(os.path.abspath(__file__))
-	root_dir = os.path.abspath(os.path.join(current_dir, ".."))
-	invPath = os.path.join(root_dir, "appInv", "getInv.py")
-	stateFile = os.path.join(root_dir, "deployed_hosts.txt")
+    loggingF(1, "Monitor Service Active...")
+    ssh_playbook = os.path.join("playbooks", "SSHDeploy.yml")
+    pkg_playbook = os.path.join("playbooks", "InstallPackages.yml")
+    invPath = os.path.join(root_dir, "appInv", "getInv.py")
 
-	while True:
-		try:
-			if not os.path.exists(stateFile):
-				with open(stateFile, "w") as f: pass
-				loggingF(1, f"Archivo {stateFile} creado porque no existía.")
+    while True:
+        try:
+            deployed = getDeployedHosts()
 
-			deployed = getDeployedHosts()
+            res = subprocess.run(
+                ["ansible-inventory", "-i", invPath, "--list"],
+                capture_output=True,
+                text=True,
+                timeout=60
+            )
 
-			res = subprocess.run(
-				["ansible-inventory", "-i", invPath, "--list"],
-				capture_output=True,
-				text=True,
-				timeout=60
-			)
+            if res.returncode != 0:
+                loggingF(4, f"Ansible Inventory Error: {res.stderr}")
+                time.sleep(10)
+                continue
 
-			if res.returncode != 0:
-				loggingF(4, f"Ansible Error (stderr): {res.stderr}")
-				continue
+            inventory_data = json.loads(res.stdout)
+            currentInv = inventory_data.get('ungrouped', {}).get('hosts', [])
+            if not currentInv:
+                currentInv = inventory_data.get('all', {}).get('hosts', [])
 
-			inventory_data = json.loads(res.stdout)
+            loggingF(1, f"Inventario leído. Hosts encontrados: {len(currentInv)}")
 
-			currentInv = inventory_data.get('ungrouped', {}).get('hosts', [])
-			if not currentInv:
-				currentInv = inventory_data.get('all', {}).get('hosts', [])
+            for host in currentInv:
+                if host not in deployed:
+                    loggingF(1, f"¡NUEVO HOST DETECTADO!: {host}")
+                    if playbookRun(ssh_playbook, host, ["-k"]):
+                        if playbookRun(pkg_playbook, host):
+                            loggingF(1, f"Guardando {host} en deployed_hosts.txt")
+                            saveDeployedHost(host)
+                        else:
+                            loggingF(4, f"Fallo en Package para {host}")
+                    else:
+                        loggingF(4, f"Fallo en SSH para {host}")
+                else:
+                    pass
 
-			loggingF(1, f"Inventario leído. Hosts encontrados: {len(currentInv)}")
+        except Exception as e:
+            loggingF(4, f"ERROR CRÍTICO en el ciclo: {str(e)}")
 
-			for host in currentInv:
-				loggingF(1, f"Analizando host: {host}")
-				if host not in deployed:
-					loggingF(1, f"¡NUEVO HOST DETECTADO!: {host}")
-
-					if playbookRun(ssh_playbook, host, ["-k"]):
-						if playbookRun(pkg_playbook, host):
-							loggingF(1, f"Guardando {host} en deployed_hosts.txt")
-							saveDeployedHost(host)
-						else:
-							loggingF(4, f"Fallo en Package para {host}")
-					else:
-						loggingF(4, f"Fallo en SSH para {host}")
-				else:
-					loggingF(1, f"El host {host} ya estaba desplegado (omitido).")
-
-		except Exception as e:
-			loggingF(4, f"ERROR CRÍTICO en el ciclo: {str(e)}")
-
-		time.sleep(10)
+        time.sleep(10)
 
 if __name__ == "__main__":
-	monitorCycle()
+    monitorCycle()
