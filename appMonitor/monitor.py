@@ -35,7 +35,7 @@ def monitorCycle():
 
             res = subprocess.run(
                 ["ansible-inventory", "-i", invPath, "--list"],
-                capture_output=False,
+                capture_output=True,
                 text=True,
                 timeout=60
             )
