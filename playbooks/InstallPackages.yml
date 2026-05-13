@@ -2,6 +2,8 @@
 - name: Instalacion automatizada de paquetes
   hosts: all
   become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   gather_facts: yes
   tasks:
     - name: Actualizar cache de apt (equivalente a apt-get update)
