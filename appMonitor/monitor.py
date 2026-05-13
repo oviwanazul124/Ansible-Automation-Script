@@ -39,7 +39,8 @@ def playbookRun(playbook_path, ip, extra_args=[]):
 		"-i", invPath,
 		os.path.join(root_dir, playbook_path),
 		"-u", remote_user,
-		"--limit", ip
+		"--limit", ip,
+		"-vvv"
 	] + extra_args
 
 	if os.path.exists(vaultPassFile):
@@ -51,7 +52,10 @@ def playbookRun(playbook_path, ip, extra_args=[]):
 	try:
 		result = subprocess.run(command, env=env, capture_output=True, text=True)
 		if result.returncode != 0:
-			loggingF(4, f"Ansible Playbook Error: {result.stderr}")
+
+			error_msg = result.stderr.strip() or result.stdout.strip()
+
+			loggingF(4, f"Ansible Playbook Error: {error_msg}")
 		return result.returncode == 0
 	except Exception as e:
 		loggingF(4, f"Excepción ejecutando playbook: {str(e)}")
