@@ -25,9 +25,9 @@ def aptDeploy(packg):
     inv = os.path.join("appInv", "getInv.py")
     checkPermission(inv)
     aptPlaybook = os.path.join("playbooks", "AppInstall.yml")
-    remote_user = configGet('users', 'remote_user') 
+    remote_user = configGet('users', 'remote_user')
     if isinstance(packg, list):
-        packages_val = ",".join(packg) 
+        packages_val = ",".join(packg)
     else:
         packages_val = packg
 
