@@ -1,8 +1,15 @@
 ---
-- name: Playbook de prueba de conectividad
+- name: Instalacion automatizada de paquetes
   hosts: all
-  gather_facts: no
+  become: yes
+  gather_facts: yes
   tasks:
-    - name: Confirmar conexion
-      debug:
-        msg: "Conexión establecida con éxito con {{ inventory_hostname }}. Probando escritura de hosts..."
+    - name: Actualizar cache de apt (equivalente a apt-get update)
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Instalar el paquete htop
+      apt:
+        name: htop
+        state: present
