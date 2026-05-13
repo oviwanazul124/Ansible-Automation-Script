@@ -17,7 +17,7 @@ def getDeployedHosts():
     with open(stateFile, "r") as f:
         return set(line.strip() for line in f)
 
-def saveDeployedHost(ip): # Asegúrate de que el nombre coincida abajo
+def saveDeployedHost(ip):
     with open(stateFile, "a") as f:
         f.write(f"{ip}\n")
 
@@ -63,7 +63,7 @@ def monitorCycle():
         except Exception as e:
             loggingF(4, f"Error inesperado: {str(e)}")
 
-        time.sleep(300)
+        time.sleep(10)
 
 if __name__ == "__main__":
     monitorCycle()
