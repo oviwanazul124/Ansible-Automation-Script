@@ -24,15 +24,19 @@ def saveDeployedHost(ip):
         f.write(f"{ip}\n")
 
 def monitorCycle():
-    loggingF(1, "Monitor Service Active: Waiting for new hosts...")
+    loggingF(1, "Monitor Service Active...")
 
-    ssh_playbook = os.path.join("playbooks", "SSHDeploy.yml")
-    pkg_playbook = os.path.join("playbooks", "InstallPackages.yml")
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    invPath = os.path.abspath(os.path.join(current_dir, "..", "appInv", "getInv.py"))
+    root_dir = os.path.abspath(os.path.join(current_dir, ".."))
+    invPath = os.path.join(root_dir, "appInv", "getInv.py")
+    stateFile = os.path.join(root_dir, "deployed_hosts.txt")
 
     while True:
         try:
+            if not os.path.exists(stateFile):
+                with open(stateFile, "w") as f: pass
+                loggingF(1, f"Archivo {stateFile} creado porque no existía.")
+
             deployed = getDeployedHosts()
 
             res = subprocess.run(
@@ -43,28 +47,35 @@ def monitorCycle():
             )
 
             if res.returncode != 0:
-                loggingF(4, f"Error obteniendo inventario: {res.stderr}")
-            else:
-                inventory_data = json.loads(res.stdout)
+                loggingF(4, f"Ansible Error (stderr): {res.stderr}")
+                continue
+
+            inventory_data = json.loads(res.stdout)
+
+            currentInv = inventory_data.get('ungrouped', {}).get('hosts', [])
+            if not currentInv:
                 currentInv = inventory_data.get('all', {}).get('hosts', [])
 
-                for host in currentInv:
-                    if host not in deployed:
-                        loggingF(1, f"New device {host} found. Initializing...")
+            loggingF(1, f"Inventario leído. Hosts encontrados: {len(currentInv)}")
 
-                        if playbookRun(ssh_playbook, host, ["-k"]):
-                            if playbookRun(pkg_playbook, host):
-                                loggingF(1, f"Success for {host}")
-                                saveDeployedHost(host)
-                            else:
-                                loggingF(4, f"Package FAILED for {host}")
+            for host in currentInv:
+                loggingF(1, f"Analizando host: {host}")
+                if host not in deployed:
+                    loggingF(1, f"¡NUEVO HOST DETECTADO!: {host}")
+
+                    if playbookRun(ssh_playbook, host, ["-k"]):
+                        if playbookRun(pkg_playbook, host):
+                            loggingF(1, f"Guardando {host} en deployed_hosts.txt")
+                            saveDeployedHost(host)
                         else:
-                            loggingF(4, f"SSH FAILED for {host}")
+                            loggingF(4, f"Fallo en Package para {host}")
+                    else:
+                        loggingF(4, f"Fallo en SSH para {host}")
+                else:
+                    loggingF(1, f"El host {host} ya estaba desplegado (omitido).")
 
-        except subprocess.TimeoutExpired:
-            loggingF(4, "Timeout: El inventario tardó demasiado en responder.")
         except Exception as e:
-            loggingF(4, f"Error inesperado: {str(e)}")
+            loggingF(4, f"ERROR CRÍTICO en el ciclo: {str(e)}")
 
         time.sleep(10)
 
