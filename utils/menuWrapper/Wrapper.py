@@ -12,7 +12,7 @@ def menuWrapper(title, menuDict):
         print(f'--- {title} ---')
         for key, value in menuDict.items():
             print(f'{key}. {value['label']}')
-        
+
         opt = input("\nSelect an option: ")
 
         if opt in menuDict:
@@ -25,6 +25,8 @@ def menuWrapper(title, menuDict):
                 menuWrapper("Debug Menu", debugMenu)
             elif item['func'] == 'confMenu':
                 menuWrapper("Configuration Menu", confMenu)
+            elif item['func'] == 'deployMenu':
+                menuWrapper("Deploy Menu", deployMenu)
             else:
                 item['func']()
                 input("\nPress Enter to continue...")

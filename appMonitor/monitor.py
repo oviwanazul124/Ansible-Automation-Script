@@ -2,6 +2,9 @@ import os
 import json
 import subprocess
 import time
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from utils.logger.logger import loggingF
 from utils.configR.configR import configGet
 
