@@ -5,6 +5,7 @@ from appSHHDeploy.sshDeploy import sshDeploy
 from utils.dependenciesInstaller.depenInst import install_dependencies
 from appVaultConfig.vaultConfig import vaultConfig
 from utils.getIP.getIP import inv
+from appWatchDogDeploy.WatchdogDeploy import deployWatchdog
 
 menuMain = {
     "1": {
@@ -68,7 +69,7 @@ deployMenu = {
 
     "2": {
         "label": "Automatic Deployment",
-        "func": lambda: None
+        "func": lambda: deployWatchdog()
     },
 
     "3": {
