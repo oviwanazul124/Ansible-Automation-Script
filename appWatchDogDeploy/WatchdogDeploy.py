@@ -26,19 +26,42 @@ def deployWatchdog():
 
     invPath = os.path.join(root_dir, "appInv", "getInv.py")
 
+    serviceName = 'watchdog-Ansible'
+
+    scriptPath = os.path.join(root_dir, "appWatchDog", "watchdog.py")
+
+    username = os.environ.get("SUDO_USER", os.getlogin())
+
+    unit_file_path = f"/etc/systemd/system/{serviceName}.service"
+
+    service_config = f"""[Unit]
+Description=Ansible Network Monitor Service
+After=network.target
+
+[Service]
+User={username}
+Group={username}
+WorkingDirectory={root_dir}
+ExecStart={sys.executable} -u {scriptPath}
+Restart=always
+RestartSec=10
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
+"""
 
     existService = False
 
     try:
 
-        subprocess.run(
+        if subprocess.run(
             ["systemctl", 'list-unit-files', 'watchdog-Ansible.service'],
             check=True,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
-        )
-
-        existService = True
+        ) == True:
+            existService = True
     
     except Exception as e:
 
@@ -91,9 +114,39 @@ def deployWatchdog():
                 input("Press enter to end the program...")
 
                 sys.exit(1)
-        
-        
+            
+            try:
+                
+                # Write Service 
 
+                loggingF(1, f"Writing service file to {unit_file_path}")
+
+                with open(unit_file_path, "w") as f:
+                    f.write(service_config)
+
+                # Reload Daemon
+
+                loggingF(1, "Reloading system daemon...")
+
+                subprocess.run(["systemctl", "daemon-reload"], check=True)
+
+                # Enable Service on boot
+
+                loggingF(1, f"Enabling {serviceName} to start on boot...")
+                
+                subprocess.run(["systemctl", "enable", serviceName], check=True)
+
+                # Starting the service
+
+                loggingF(1, f"Trying to start the service {serviceName}", check=True)
+
+                subprocess.run(["systemctl", "restart", serviceName], check=True)
+
+            except Exception as e:
+
+                print("There was an error deploying the service, please checks the logs for more information")
+
+                loggingF(4, f"There was an error deploying the service: {e}")
 
         else:
             pass
