@@ -138,7 +138,7 @@ WantedBy=multi-user.target
 
                 # Starting the service
 
-                loggingF(1, f"Trying to start the service {serviceName}", check=True)
+                loggingF(1, f"Trying to start the service {serviceName}")
 
                 subprocess.run(["systemctl", "restart", serviceName], check=True)
 
