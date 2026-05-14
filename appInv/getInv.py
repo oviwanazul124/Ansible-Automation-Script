@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 
 # Imports
+
 import json
 import sys
 import os
 from scapy.all import ARP, Ether, srp
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 # Custom Imports
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from utils.configR.configR import configGet
 from utils.logger.logger import loggingF
 from utils.checkRoot.checkRoot import checkRoot
 
-# Check if the script is run as root
-
-checkRoot()
+# discovery function.
+# Objetive: This function is responsible for discovering the hosts on the network and parsing it to
+# JSON for Ansible.
 
 def discovery():
 

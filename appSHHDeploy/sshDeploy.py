@@ -14,18 +14,25 @@ from utils.logger.logger import loggingF
 from utils.configR.configR import configGet
 from utils.checkPermission.chkPerm import checkPermission
 
+# sshDeploy function
+# Objetive: Deploy the SSH key to the hosts in the inventory file or
+# the one not detect if it is running in automatic mode.
+
 def sshDeploy():
 
     # Detect if public key is created or in config.ini
 
     if not os.path.exists(os.path.expanduser("~/.ssh/id_rsa.pub")):
+
         loggingF(3, "SSH public key not found. Generating SSH public key")
         
         try:
             subprocess.run(["ssh-keygen", "-t", "rsa", "-N", "", "-f", os.path.expanduser("~/.ssh/id_rsa")], check=True)
+
             loggingF(1, "SSH public key generated successfully")
 
         except subprocess.CalledProcessError as e:
+
             loggingF(4, f"Error generating SSH public key: {e}")
 
     # Create enveiorement for host check
@@ -36,8 +43,11 @@ def sshDeploy():
     # Getting paths for all of them
 
     inv = os.path.join("appInv", "getInv.py")
+
     checkPermission(inv)
+
     sshPlaybook = os.path.join("playbooks", "SSHDeploy.yml")
+
     remote_user = configGet('users', 'remote_user')
 
     # Ansible playbook to deploy SSH key
@@ -54,9 +64,12 @@ def sshDeploy():
     try:
 
         subprocess.run(command, check=True, env=env)
+
         loggingF(1, "SSH key deployed succesfully")
+
         print("SSH key deployed successfully. For all the available host, for checking the host use the inventory option")
 
     except subprocess.CalledProcessError as e:
+
         loggingF(4, f"Error running sshDeploy: {e}")
         

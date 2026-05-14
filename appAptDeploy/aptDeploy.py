@@ -13,25 +13,41 @@ from utils.logger.logger import loggingF
 from utils.configR.configR import configGet
 from utils.checkPermission.chkPerm import checkPermission
 
+# aptDeploy function
+# Objetive: This function is responsible for deploying the applications using Ansible playbooks.
+# It take a package or a list of packages as an argument and runs the ansible playbook to install the packages on the targets machines.
+
 def aptDeploy(packg):
 
-    # Create enveiorement for host check
+    # Create envenvironment variable to disable key checking on Ansible
 
     env = os.environ.copy()
     env["ANSIBLE_HOST_KEY_CHECKING"] = "False"
 
-    # Getting all the variables and paths
+    # Get all the paths and variables need to run the script correctly
+
+        # Inv file path and permissions check
 
     inv = os.path.join("appInv", "getInv.py")
     checkPermission(inv)
+
+        # aptPlayBook path
+
     aptPlaybook = os.path.join("playbooks", "AppInstall.yml")
+    
+        # Remote user path
     remote_user = configGet('users', 'remote_user')
+    
+    # Correct formating of the input, if the input is a list of packages, we will
+    # convert it from git htop to "htop, git", if it is a single package, we will
+    # keep it as it is
+
     if isinstance(packg, list):
         packages_val = ",".join(packg)
     else:
         packages_val = packg
 
-    # Ansible playbook to install the apps
+    # Command Line to run the ansible playbook
 
     command = [
         "ansible-playbook",
