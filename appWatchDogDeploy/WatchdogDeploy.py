@@ -203,7 +203,7 @@ WantedBy=multi-user.target
 
                 subprocess.run(["systemctl", "daemon-reload"], check=True)
 
-                print{f"{T.GREEN} {T.BOLD} [OK] Daemon reloaded successfully. {T.RESET}"}
+                print(f"{T.GREEN} {T.BOLD} [OK] Daemon reloaded successfully. {T.RESET}")
 
             except Exception as e:
 
