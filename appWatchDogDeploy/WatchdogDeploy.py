@@ -165,6 +165,8 @@ WantedBy=multi-user.target
 
                 sys.exit(1)
 
+            generatePkgPlaybook(root_dir)
+
             try:
                 
                 # Write Service 
