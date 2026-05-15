@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import logging
+import logging.handlers
 from paths import logsDir_path, logs_dir
 
 # getLogsDir function
