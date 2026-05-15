@@ -36,12 +36,12 @@ def generatePkgPlaybook(root_dir):
         return
 
     playbook_data = [{
-        "name": "Instalación Automática de Paquetes mediante Watchdog",
+        "name": "Instalacion Automatica de Paquetes mediante Watchdog",
         "hosts": "all",
         "become": True,
         "tasks": [
             {
-                "name": "Asegurar que los paquetes están instalados",
+                "name": "Asegurar que los paquetes estan instalados",
                 "ansible.builtin.package": {
                     "name": pkg_list,
                     "state": "present"
