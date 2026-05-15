@@ -7,8 +7,6 @@ import yaml
 
 # Custom Imports
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from utils.colors import Theme as T
 from utils.logger.logger import loggingF
 from utils.errorsHandler.errorHandler import erHandler
