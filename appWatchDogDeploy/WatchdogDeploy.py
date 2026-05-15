@@ -18,7 +18,9 @@ from utils.deployService.deployService import deployService
 
 def deployWatchdog():
 
-    CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+    FILE_PATH = os.path.abspath(__file__) 
+    
+    CURRENT_DIR = os.path.dirname(FILE_PATH) 
     
     root_dir = os.path.dirname(CURRENT_DIR)
     
