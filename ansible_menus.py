@@ -12,9 +12,11 @@ from utils.getIP.getIP import inv
 from appWatchDogDeploy.WatchdogDeploy import deployWatchdog
 from utils.colors import Theme as T
 from utils.generatePlayBook.generatePlaybook import generatePkgPlaybook
-
+from utils.checkLogs.checkLogs import Checklog
 
 root_dir = os.path.dirname(os.path.abspath(__file__))
+
+logs_dir = os.path.join(root_dir, "logs", "log.log")
 
 menuMain = {
     "1": {
@@ -53,7 +55,7 @@ debugMenu = {
 
     "4": {
         "label": "[?] Check logs",
-        "func": lambda: None
+        "func": lambda: Checklog(logs_dir)
     },
 
     "5": {
