@@ -15,18 +15,18 @@ from paths import config_path, vault_file_path, vault_pass_file_path, inv_path
 # configGet function
 # Objetive: Get values of the config.ini
 
+config = configparser.ConfigParser()
+
+filesRead = config.read(config_path)
+
 def configGet(sectionC, optionC):
 
     # Init configParser
 
-    config = configparser.ConfigParser()
-
-    # Read config.ini
-
-    filesRead = config.read(config_path)
-
     loggingF(1, f"Searching in config for section {sectionC} with value {optionC}")
     
+    print(config_path)
+
     try:
         
         return config.get(sectionC, optionC)
