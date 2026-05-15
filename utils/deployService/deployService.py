@@ -44,7 +44,11 @@ RestartSec=10
 WantedBy=multi-user.target
 """
 
+    stateFile = os.path.join(root_dir, "deployed_hosts.txt")
     
+    if os.path.exists(stateFile):
+        os.remove(stateFile)
+
     # Write Service 
 
     if status == False:

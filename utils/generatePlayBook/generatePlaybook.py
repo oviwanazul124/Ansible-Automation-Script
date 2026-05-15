@@ -25,6 +25,10 @@ def generatePkgPlaybook(root_dir):
 
         os.makedirs(playbook_dir)
 
+    if os.path.exists(playbook_path):
+
+        os.remove(playbook_path)
+
     print(f"{T.BOLD} \n--- Configuración de Paquetes --- {T.RESET}")
 
     print("Enter the packages you want to create, separated by commas:")
