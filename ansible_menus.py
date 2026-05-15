@@ -9,10 +9,9 @@ from utils.colors import Theme as T
 from utils.deployment_engine import sshDeploy, install_dependencies, generatePkgPlaybook, aptDeploy
 from utils.sys_check import Checklog, getFullStatus
 from utils.config_manager import inv, vaultConfig
+from utils.observability import projectRoot
 
-root_dir = os.path.dirname(os.path.abspath(__file__))
-
-logs_dir = os.path.join(root_dir, "logs", "log.log")
+logs_dir = projectRoot() / "logs" / "log.log"
 
 menuMain = {
     "1": {
