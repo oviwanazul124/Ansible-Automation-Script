@@ -5,7 +5,6 @@ import os
 
 # Custom Imports
 
-from ansible_menus import *
 from utils.colors import Theme as T
 
 # Banner
