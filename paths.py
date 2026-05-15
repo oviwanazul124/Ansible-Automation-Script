@@ -13,7 +13,7 @@ root_dir = projectRoot()
 
 # Working paths
 
-logsDir_path = root_dir / "logs"
+logsDir_path = Path("/var/log/watchdog")
 
 inv_path = root_dir / "appInv" / "getInv.py"
 
@@ -29,7 +29,7 @@ script_path = root_dir / "appWatchDog" / "watchdog.py"
 
 stateFile_path = root_dir / "deployed_hosts.txt"
 
-logs_dir = root_dir / "logs" / "log.log"
+logs_dir = Path("/var/log/watchdog/log.log")
 
 config_path = root_dir / "config.ini"
 
