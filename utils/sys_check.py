@@ -13,7 +13,6 @@ from paths import logs_dir
 
 def Checklog():
     try:
-
         with open(logs_dir, 'r') as f:
 
             f.seek(0, 2)
@@ -33,6 +32,9 @@ def Checklog():
     except KeyboardInterrupt:
 
         print(f"\n{T.BOLD} [!] Logs check interrupted by keyboard {T.RESET}")
+
+    except Exception as e:
+        print(f"{e}")
 
 def checkRoot():
 
