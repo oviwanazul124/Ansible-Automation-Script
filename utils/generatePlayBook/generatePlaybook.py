@@ -15,6 +15,8 @@ from utils.deployService.deployService import deployService
 
 def generatePkgPlaybook(root_dir):
 
+    print(root_dir)
+
     playbook_dir = os.path.join(root_dir, "playbooks")
 
     playbook_path = os.path.join(playbook_dir, "InstallPackages.yml")
