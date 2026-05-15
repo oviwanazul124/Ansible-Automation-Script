@@ -5,7 +5,6 @@ import os
 
 # Custom Imports
 
-from ansible_menus import *
 from utils.colors import Theme as T
 
 # Banner
@@ -39,6 +38,8 @@ def clear():
 
 def menuWrapper(title, menuDict):
 
+    import ansible_menus
+
     while True:
 
         clear()
@@ -67,15 +68,15 @@ def menuWrapper(title, menuDict):
 
             if item['func'] == 'debugMenu':
 
-                menuWrapper("Debug Menu", debugMenu)
+                menuWrapper("Debug Menu", ansible_menus.debugMenu)
 
             elif item['func'] == 'confMenu':
 
-                menuWrapper("Configuration Menu", confMenu)
+                menuWrapper("Configuration Menu", ansible_menus.confMenu)
 
             elif item['func'] == 'deployMenu':
 
-                menuWrapper("Deploy Menu", deployMenu)
+                menuWrapper("Deploy Menu", ansible_menus.deployMenu)
             else:
 
                 item['func']()

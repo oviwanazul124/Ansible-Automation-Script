@@ -37,17 +37,17 @@ menuMain = {
 debugMenu = {
     "1": {
         "label": "[?] Check devices actives in the network",
-        "func": inv
+        "func": inv()
     },
 
     "2": {
         "label": "[^] Deploy SSH Key",
-        "func": sshDeploy
+        "func": sshDeploy()
     },
 
     "3": {
         "label": "[^] Install Dependencies",
-        "func": lambda: install_dependencies
+        "func": lambda: install_dependencies()
     },
 
     "4": {
@@ -70,7 +70,7 @@ debugMenu = {
 confMenu = {
     "1": {
         "label": "[?] Configure Ansible Vault",
-        "func": lambda: vaultConfig
+        "func": lambda: vaultConfig()
     },
 
     "2": {
