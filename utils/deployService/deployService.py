@@ -12,7 +12,8 @@ from utils.checkRoot.checkRoot import checkRoot
 
 def deployService(status):
 
-    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.dirname(CURRENT_DIR)
 
     print(root_dir)
 
