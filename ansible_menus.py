@@ -13,6 +13,8 @@ from utils.observability import projectRoot
 
 logs_dir = projectRoot() / "logs" / "log.log"
 
+root_dir = projectRoot()
+
 menuMain = {
     "1": {
         "label": "[?] Enter Debug Menu",
@@ -35,17 +37,17 @@ menuMain = {
 debugMenu = {
     "1": {
         "label": "[?] Check devices actives in the network",
-        "func": inv
+        "func": inv()
     },
 
     "2": {
         "label": "[^] Deploy SSH Key",
-        "func": sshDeploy
+        "func": sshDeploy()
     },
 
     "3": {
         "label": "[^] Install Dependencies",
-        "func": lambda: install_dependencies
+        "func": lambda: install_dependencies()
     },
 
     "4": {
@@ -68,7 +70,7 @@ debugMenu = {
 confMenu = {
     "1": {
         "label": "[?] Configure Ansible Vault",
-        "func": lambda: vaultConfig
+        "func": lambda: vaultConfig()
     },
 
     "2": {
@@ -90,7 +92,7 @@ deployMenu = {
 
     "2": {
         "label": "[^] Automatic Deployment",
-        "func": lambda: deployWatchdog
+        "func": lambda: deployWatchdog()
     },
 
     "3": {
