@@ -19,8 +19,6 @@ def deployService(status):
     DIR_2 = os.path.dirname(DIR_1)
     
     root_dir = os.path.dirname(DIR_2)
-    
-    print(root_dir)
 
     serviceName = 'watchdog-Ansible'
 
