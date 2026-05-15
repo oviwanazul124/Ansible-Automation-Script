@@ -1,3 +1,7 @@
+# Imports
+
+import os
+
 # Custom Imports
 
 from appAptDeploy.aptDeploy import aptDeploy
@@ -8,6 +12,11 @@ from utils.getIP.getIP import inv
 from appWatchDogDeploy.WatchdogDeploy import deployWatchdog
 from utils.colors import Theme as T
 from utils.generatePlayBook.generatePlaybook import generatePkgPlaybook
+
+
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+root_dir = os.path.dirname(CURRENT_DIR)
 
 menuMain = {
     "1": {
@@ -69,7 +78,7 @@ confMenu = {
 
     "2": {
         "label": "[?] Modify Service Playbook",
-        "func": lambda: generatePkgPlaybook
+        "func": lambda: generatePkgPlaybook(root_dir)
     },
 
     "3": {
