@@ -13,6 +13,7 @@ from appWatchDogDeploy.WatchdogDeploy import deployWatchdog
 from utils.colors import Theme as T
 from utils.generatePlayBook.generatePlaybook import generatePkgPlaybook
 from utils.checkLogs.checkLogs import Checklog
+from utils.checkServiceStatus.serviceStatus import getFullStatus
 
 root_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -60,7 +61,7 @@ debugMenu = {
 
     "5": {
         "label": "[?] Check Status of service",
-        "func": lambda: None
+        "func": lambda: getFullStatus("watchdog-Ansible.service")
     },
 
     "6": {
