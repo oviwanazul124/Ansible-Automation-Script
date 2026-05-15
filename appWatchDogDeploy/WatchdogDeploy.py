@@ -75,7 +75,6 @@ def deployWatchdog():
 
     scriptPath = os.path.join(root_dir, "appWatchDog", "watchdog.py")
 
-    username = os.environ.get("SUDO_USER", os.getlogin())
 
     unit_file_path = f"/etc/systemd/system/{serviceName}.service"
 
@@ -84,8 +83,8 @@ Description=Ansible Network Monitor Service
 After=network.target
 
 [Service]
-User={username}
-Group={username}
+User=root
+Group=root
 WorkingDirectory={root_dir}
 
 Environment=PYTHONPATH={root_dir}
