@@ -19,9 +19,9 @@ from utils.deployService.deployService import deployService
 def deployWatchdog():
 
     CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-
+    
     root_dir = os.path.dirname(CURRENT_DIR)
-
+    
     vaultFile = os.path.join(root_dir, 'pass.yml')
 
     vaultPassFile = os.path.join(root_dir, '.vaultPass.txt')
