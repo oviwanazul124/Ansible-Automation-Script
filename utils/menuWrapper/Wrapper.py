@@ -41,10 +41,10 @@ def clear():
 def menuWrapper(title, menuDict):
 
     while True:
+        
+        clear()
 
         print(RED + BANNER + RESET)
-
-        clear()
 
         print(f"{BOLD}--- {title.upper()} ---{RESET}")
 
