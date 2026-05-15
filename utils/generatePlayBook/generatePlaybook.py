@@ -69,15 +69,6 @@ def generatePkgPlaybook(root_dir):
 
         loggingF(1, f"Playbook Saved in: {playbook_path}")
 
-        # Justo después de yaml.dump...
-        if os.path.exists(playbook_path):
-            print(f"{T.GREEN} [DEBUG] Confirmado: El archivo existe físicamente. {T.RESET}")
-            print(f" [DEBUG] Tamaño del archivo: {os.path.getsize(playbook_path)} bytes")
-        else:
-            print(f"{T.RED} [DEBUG] ERROR: Python dice que lo guardó, pero el archivo NO existe. {T.RESET}")
-
-            print(f"{T.GREEN} {T.BOLD} [OK] Playbook with the following packages {len(pkg_list)} has been saved. {T.RESET}")
-            
     except Exception as e:
 
         erHandler(e)
