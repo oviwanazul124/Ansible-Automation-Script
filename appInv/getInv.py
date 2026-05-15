@@ -11,9 +11,7 @@ from scapy.all import ARP, Ether, srp
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from utils.sys_check import *
-from utils.config_manager import *
-from utils.observability import *
+from utils.config_manager import configGet
 
 # discovery function.
 # Objetive: This function is responsible for discovering the hosts on the network and parsing it to

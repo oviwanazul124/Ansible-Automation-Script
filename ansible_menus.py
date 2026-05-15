@@ -1,19 +1,9 @@
-# Imports
-
-import os
-
 # Custom Imports
 
 from appWatchDogDeploy.WatchdogDeploy import deployWatchdog
-from utils.colors import Theme as T
 from utils.deployment_engine import sshDeploy, install_dependencies, generatePkgPlaybook, aptDeploy
 from utils.sys_check import Checklog, getFullStatus
 from utils.config_manager import inv, vaultConfig
-from utils.observability import projectRoot
-
-logs_dir = projectRoot() / "logs" / "log.log"
-
-root_dir = projectRoot()
 
 menuMain = {
     "1": {
@@ -52,7 +42,7 @@ debugMenu = {
 
     "4": {
         "label": "[?] Check logs",
-        "func": lambda: Checklog(logs_dir)
+        "func": lambda: Checklog
     },
 
     "5": {
@@ -75,7 +65,7 @@ confMenu = {
 
     "2": {
         "label": "[?] Modify Service Playbook",
-        "func": lambda: generatePkgPlaybook(root_dir)
+        "func": lambda: generatePkgPlaybook
     },
 
     "3": {
@@ -87,7 +77,7 @@ confMenu = {
 deployMenu = {
     "1": {
         "label": "[^] Inmediate Deployment",
-        "func": lambda: aptDeploy(input(f"{T.BOLD} Enter the packages to install as example nginx, git » {T.RESET}"))
+        "func": lambda: aptDeploy
     },
 
     "2": {

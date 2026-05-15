@@ -7,20 +7,31 @@ import time
 
 # Custom Imports
 
-from utils.observability import *
+from utils.observability import loggingF
 from utils.colors import Theme as T
+from paths import logs_dir
 
-def Checklog(nombre_archivo):
+def Checklog():
     try:
-        with open(nombre_archivo, 'r') as f:
+
+        with open(logs_dir, 'r') as f:
+
             f.seek(0, 2)
+
             while True:
+
                 linea = f.readline()
+
                 if not linea:
+
                     time.sleep(0.1)
+
                     continue
+
                 print(linea, end='')
+
     except KeyboardInterrupt:
+
         print(f"\n{T.BOLD} [!] Logs check interrupted by keyboard {T.RESET}")
 
 def checkRoot():
@@ -34,19 +45,28 @@ def checkRoot():
         sys.exit(1)
 
 def getServiceStatus(service_name):
+
     try:
+
         result = subprocess.run(
+
             ['systemctl', 'list-unit-files', f'{service_name}.service'],
+
             stdout=subprocess.PIPE,
+
             stderr=subprocess.PIPE,
+
             text=True
         )
         
         exists = service_name in result.stdout
+
         return exists
         
     except Exception as e:
+
         print(f"Error checking service: {e}")
+
         return False
 
 def checkRoot():
@@ -60,28 +80,44 @@ def checkRoot():
         sys.exit(1)
 
 def getServiceStatus(service_name):
+
     try:
+
         result = subprocess.run(
+
             ['systemctl', 'list-unit-files', f'{service_name}.service'],
+
             stdout=subprocess.PIPE,
+
             stderr=subprocess.PIPE,
+
             text=True
         )
         
         exists = service_name in result.stdout
+
         return exists
         
     except Exception as e:
+
         print(f"Error checking service: {e}")
+
         return False
 
 def getFullStatus(service_name):
+
     try:
+
         # Ejecutamos 'systemctl status'
+
         output = subprocess.check_output(['systemctl', 'status', service_name], 
+                                         
                                          universal_newlines=True)
+        
         return output
+    
     except subprocess.CalledProcessError as e:
+
         return e.output
 
 def checkPermission(appPath):

@@ -11,15 +11,14 @@ import sys
 # Get the root folder for later usage and
 # to make easier the imports of the utils.
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-root_dir = os.path.abspath(os.path.join(current_dir, ".."))
-sys.path.append(root_dir)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Custom Imports
 
-from utils.observability import *
-from utils.config_manager import *
-from utils.sys_check import *
+from utils.observability import loggingF
+from utils.config_manager import configGet
+from utils.sys_check import erHandler, checkPermission
+from paths import *
 
 # Path of the deployed hosts file
 # This file will be used to keep track of the hosts active on the network and modified

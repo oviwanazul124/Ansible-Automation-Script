@@ -1,6 +1,5 @@
 # Imports
 
-
 import os
 import getpass
 import subprocess
@@ -8,27 +7,23 @@ import configparser
 
 # Custom Imports
 
-from utils.observability import *
+from utils.observability import loggingF
 from utils.colors import Theme as T
-from utils.sys_check import *
-
-# Init configParser
-
-config = configparser.ConfigParser()
-
-# Paths to config.ini to solve bad imports
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-configPath = os.path.join(BASE_DIR, 'config.ini')
-
-# Read config.ini
-
-filesRead = config.read(configPath)
+from utils.sys_check import checkPermission
+from paths import config_path, vault_file_path, vault_pass_file_path, inv_path
 
 # configGet function
 # Objetive: Get values of the config.ini
 
 def configGet(sectionC, optionC):
+
+    # Init configParser
+
+    config = configparser.ConfigParser()
+
+    # Read config.ini
+
+    filesRead = config.read(config_path)
 
     loggingF(1, f"Searching in config for section {sectionC} with value {optionC}")
     
@@ -55,42 +50,32 @@ def configGet(sectionC, optionC):
 
 def vaultConfig():
 
-    # Path working to not get import errors and make easier use.
-
-    CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-
-    root_dir = os.path.dirname(CURRENT_DIR)
-
-    vaultFile = os.path.join(root_dir, 'pass.yml')
-
-    vaultPassFile = os.path.join(root_dir, '.vaultPass.txt')
-
     # Check if vault password file exists, if not create it and set permissiosn to 600
 
-    if not os.path.exists(vaultPassFile):
+    if not os.path.exists(vault_file_path):
 
         aPass = getpass.getpass(f"{T.BOLD} Enter master password for Ansible Vault » {T.RESET}")
 
         try:
-            with open(vaultPassFile, 'w') as f:
+            with open(vault_file_path, 'w') as f:
 
                 f.write(aPass)
 
-            os.chmod(vaultPassFile, 0o600)
+            os.chmod(vault_file_path, 0o600)
 
         except Exception as e:
             loggingF(4, f"Error creating vault password file: {e}")
 
 
-        loggingF(1, f"Created vault password file: {vaultPassFile}")
+        loggingF(1, f"Created vault password file: {vault_pass_file_path}")
 
         print(f"{T.GREEN} {T.BOLD} [OK] Master Password stored {T.RESET}")
 
     # Check if vault file exists, if not create it with the SUDO password for the remote hosts and the SSH one.
 
-    if not os.path.exists(vaultFile):
+    if not os.path.exists(vault_pass_file_path):
 
-        loggingF(1,f"Creating new encrypted vault file: {vaultFile}")
+        loggingF(1,f"Creating new encrypted vault file: {vault_file_path}")
 
         depPass = getpass.getpass(f"{T.BOLD} Enter the SUDO password for remote hosts » {T.RESET}")
 
@@ -100,14 +85,16 @@ def vaultConfig():
 
         cmd = [
             "ansible-vault", "encrypt",
-            "--vault-password-file", vaultPassFile,
-            "--output", vaultFile,
+            "--vault-password-file", vault_file_path,
+            "--output", vault_file_path,
             "-"
         ]
 
-        try:
+        # Try to encode the contents of the Ansible Vault
 
-            result = subprocess.run(
+        try:
+    
+            subprocess.run(
                 cmd,
                 input=content.encode(),
                 capture_output=True,
@@ -116,13 +103,15 @@ def vaultConfig():
 
             print(f"{T.GREEN} {T.BOLD} [OK] Vault file encrypted successfully. {T.RESET}")
 
+        # If fails remove it to not save corrupted files
+
         except subprocess.CalledProcessError as e:
 
             print(f"Error creating vault: {e.stderr.decode()}")
 
-            if os.path.exists(vaultFile):
+            if os.path.exists(vault_file_path):
 
-                os.remove(vaultFile)
+                os.remove(vault_file_path)
 
 # inv function
 # Objetive: Debug Function to check
@@ -132,11 +121,9 @@ def inv():
 
     print("--- Inventory Script ---")
 
-    invPath = os.path.join("appInv", "getInv.py")
+    checkPermission(inv_path)
 
-    checkPermission(invPath)
-
-    result = subprocess.run(["ansible-inventory", "-i", invPath, "--list"], capture_output=True, text=True)
+    result = subprocess.run(["ansible-inventory", "-i", inv_path, "--list"], capture_output=True, text=True)
     
     if result.returncode != 0:
         

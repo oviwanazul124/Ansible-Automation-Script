@@ -7,42 +7,17 @@ import yaml
 
 # Custom Imports
 
-from utils.config_manager import configGet
 from utils.colors import Theme as T
 from utils.sys_check import loggingF, checkPermission, getServiceStatus, erHandler
-
-# install_dependencies function
-# Objetive: Install dependencies of the script
-
-def install_dependencies():
-
-    dependencies = ["scapy", "pyyaml"]
-
-    for package in dependencies:
-        
-        try:
-
-            __import__(package)
-
-        except ImportError:
-
-            loggingF(2, f"{package} not found. Attempting to install")
-           
-            try:
-                
-                subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-                
-                loggingF(2, f"{package} installed succesfully")
-            
-            except Exception as e:
-                
-                loggingF(4, f"Failed to install {package}: {e}")
-                
-                sys.exit(1)
+from paths import *
 
 # sshDeploy function
 # Objetive: Deploy the SSH key to the hosts in the inventory file or
 # the one not detect if it is running in automatic mode.
+
+# Get configs
+
+remote_user = configGet('users', 'remote_user')
 
 def sshDeploy():
 
@@ -66,22 +41,14 @@ def sshDeploy():
     env = os.environ.copy()
     env["ANSIBLE_HOST_KEY_CHECKING"] = "False"
 
-    # Getting paths for all of them
-
-    inv = os.path.join("appInv", "getInv.py")
-
-    checkPermission(inv)
-
-    sshPlaybook = os.path.join("playbooks", "SSHDeploy.yml")
-
-    remote_user = configGet('users', 'remote_user')
+    checkPermission(inv_path)
 
     # Ansible playbook to deploy SSH key
 
     command = [
         "ansible-playbook",
-        "-i", inv,
-        sshPlaybook,
+        "-i", inv_path,
+        sshPlaybook_path,
         "-u", remote_user,
         "-k",
         "--ssh-common-args=-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
@@ -99,11 +66,7 @@ def sshDeploy():
 
         loggingF(4, f"Error running sshDeploy: {e}")
 
-def generatePkgPlaybook(root_dir):
-
-    playbook_dir = os.path.join(root_dir, "playbooks")
-
-    playbook_path = os.path.join(playbook_dir, "InstallPackages.yml")
+def generatePkgPlaybook():
 
     if not os.path.exists(playbook_dir):
 
@@ -162,8 +125,6 @@ def generatePkgPlaybook(root_dir):
 
         print(f"{T.GOLD} {T.BOLD} [X] There was an error creating the files, please check the logs for more information. {T.RESET}")
 
-    serviceName = 'watchdog-Ansible'
-
     existService = getServiceStatus(serviceName)
 
     deployService(existService)
@@ -172,7 +133,9 @@ def generatePkgPlaybook(root_dir):
 # Objetive: This function is responsible for deploying the applications using Ansible playbooks.
 # It take a package or a list of packages as an argument and runs the ansible playbook to install the packages on the targets machines.
 
-def aptDeploy(packg):
+def aptDeploy():
+
+    packg = input(f"{T.BOLD} Enter the packages to install as example nginx, git » {T.RESET}")
 
     # Create envenvironment variable to disable key checking on Ansible
 
@@ -181,18 +144,10 @@ def aptDeploy(packg):
 
     # Get all the paths and variables need to run the script correctly
 
-        # Inv file path and permissions check
-
-    inv = os.path.join("appInv", "getInv.py")
-    checkPermission(inv)
-
-        # aptPlayBook path
-
-    aptPlaybook = os.path.join("playbooks", "AppInstall.yml")
+    # Inv file path and permissions check
     
-        # Remote user path
-    remote_user = configGet('users', 'remote_user')
-    
+    checkPermission(inv_path)
+
     # Correct formating of the input, if the input is a list of packages, we will
     # convert it from git htop to "htop, git", if it is a single package, we will
     # keep it as it is
@@ -206,8 +161,8 @@ def aptDeploy(packg):
 
     command = [
         "ansible-playbook",
-        "-i", inv,
-        aptPlaybook,
+        "-i", inv_path,
+        aptPlaybook_path,
         "-u", remote_user,
         "-e", f"my_packages={packages_val}",
         "-k",
@@ -218,19 +173,21 @@ def aptDeploy(packg):
     try:
 
         subprocess.run(command, check=True, env=env)
+
         loggingF(1, "Apps installed correctly")
+
         print(f"{T.GREEN} {T.BOLD} [OK] All the apps that was mentioned on the playbook was installed succesfully {T.RESET}")
 
     except subprocess.CalledProcessError as e:
+
         loggingF(4, f"Error running AppDeploy: {e}")
+
         print(f"{T.GOLD} {T.BOLD} [X] There was an error deploying the apps, please checks the logs for more info {T.RESET}")
 
 # install_dependencies function
 # Objetive: Install dependencies of the script
 
 def install_dependencies():
-
-    dependencies = ["scapy", "pyyaml"]
 
     for package in dependencies:
         
@@ -257,18 +214,6 @@ def install_dependencies():
 
 def deployService(status):
 
-    FILE_PATH = os.path.abspath(__file__)
-    
-    DIR_1 = os.path.dirname(FILE_PATH)
-    
-    DIR_2 = os.path.dirname(DIR_1)
-    
-    root_dir = os.path.dirname(DIR_2)
-
-    serviceName = 'watchdog-Ansible'
-
-    scriptPath = os.path.join(root_dir, "appWatchDog", "watchdog.py")
-
     unit_file_path = f"/etc/systemd/system/{serviceName}.service"
 
     service_config = f"""[Unit]
@@ -284,7 +229,7 @@ Environment=PYTHONPATH={root_dir}
 Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 Environment=PYTHONUNBUFFERED=1
 
-ExecStart={sys.executable} -u {scriptPath}
+ExecStart={sys.executable} -u {script_path}
 
 Restart=always
 RestartSec=10
@@ -293,10 +238,8 @@ RestartSec=10
 WantedBy=multi-user.target
 """
 
-    stateFile = os.path.join(root_dir, "deployed_hosts.txt")
-    
-    if os.path.exists(stateFile):
-        os.remove(stateFile)
+    if os.path.exists(stateFile_path):
+        os.remove(stateFile_path)
 
     # Write Service 
 

@@ -8,23 +8,13 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from utils.colors import Theme as T
-from utils.config_manager import *
-from utils.deployment_engine import *
-from utils.sys_check import *
+from utils.observability import loggingF
+from utils.sys_check import getServiceStatus, checkPermission, checkRoot
+from utils.config_manager import vaultConfig
+from utils.deployment_engine import generatePkgPlaybook
+from paths import vault_file_path, serviceName, vault_pass_file_path, inv_path
 
 def deployWatchdog():
-
-    CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-
-    root_dir = os.path.dirname(CURRENT_DIR)
-
-    vaultFile = os.path.join(root_dir, 'pass.yml')
-
-    vaultPassFile = os.path.join(root_dir, '.vaultPass.txt')
-
-    invPath = os.path.join(root_dir, "appInv", "getInv.py")
-
-    serviceName = 'watchdog-Ansible'
 
     existService = getServiceStatus(serviceName)
 
@@ -36,7 +26,7 @@ def deployWatchdog():
 
         if answer == 'y':
             
-            if not os.path.exists(vaultFile) or not os.path.exists(vaultPassFile):
+            if not os.path.exists(vault_file_path) or not os.path.exists(vault_pass_file_path):
                 
                 loggingF(1, "Vault files wasn't found, calling appVaultConfig to create them.")
             
@@ -52,7 +42,7 @@ def deployWatchdog():
 
             try:
 
-                checkPermission(invPath)
+                checkPermission(inv_path)
 
                 print(f"{T.GREEN} {T.BOLD} [OK] Permission checked and working correctly. {T.RESET}")
 
@@ -82,7 +72,7 @@ def deployWatchdog():
 
                 sys.exit(1)
 
-            generatePkgPlaybook(root_dir)
+            generatePkgPlaybook()
 
     else:
 
