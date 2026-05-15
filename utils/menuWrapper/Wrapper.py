@@ -44,7 +44,7 @@ def menuWrapper(title, menuDict):
 
         clear()
 
-        print(T.RED + BANNER + T.RESET)
+        print(T.RED + T.RESET)
 
         print(f"{T.BOLD}--- {title.upper()} ---{T.RESET}")
 
