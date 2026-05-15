@@ -61,7 +61,7 @@ debugMenu = {
 
     "5": {
         "label": "[?] Check Status of service",
-        "func": lambda: getFullStatus("watchdog-Ansible.service")
+        "func": lambda: getFullStatus("watchdog-Ansible")
     },
 
     "6": {
