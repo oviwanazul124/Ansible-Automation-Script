@@ -37,17 +37,17 @@ debugMenu = {
 
     "3": {
         "label": "[^] Install Dependencies",
-        "func": lambda: install_dependencies
+        "func": install_dependencies
     },
 
     "4": {
         "label": "[?] Check logs",
-        "func": lambda: Checklog
+        "func": Checklog
     },
 
     "5": {
         "label": "[?] Check Status of service",
-        "func": lambda: getFullStatus("watchdog-Ansible")
+        "func": getFullStatus
     },
 
     "6": {
@@ -60,12 +60,12 @@ debugMenu = {
 confMenu = {
     "1": {
         "label": "[?] Configure Ansible Vault",
-        "func": lambda: vaultConfig
+        "func": vaultConfig
     },
 
     "2": {
         "label": "[?] Modify Service Playbook",
-        "func": lambda: generatePkgPlaybook
+        "func": generatePkgPlaybook
     },
 
     "3": {
@@ -77,12 +77,12 @@ confMenu = {
 deployMenu = {
     "1": {
         "label": "[^] Inmediate Deployment",
-        "func": lambda: aptDeploy
+        "func": aptDeploy
     },
 
     "2": {
         "label": "[^] Automatic Deployment",
-        "func": lambda: deployWatchdog
+        "func": deployWatchdog
     },
 
     "3": {
