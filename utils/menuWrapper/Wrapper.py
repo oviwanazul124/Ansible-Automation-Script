@@ -61,7 +61,7 @@ def menuWrapper(title, menuDict):
 
             item = menuDict[opt]
 
-            if item['label'] in ['Exit', 'Back to Main'] or item['func'] is None:
+            if item['label'] in ['[Q] Exit', '[Q] Back to Main'] or item['func'] is None:
                 
                 break
 
@@ -80,8 +80,8 @@ def menuWrapper(title, menuDict):
 
                 item['func']()
 
-                input("\nPress Enter to continue...")
+                input(f"\n{T.BOLD} Press Enter to continue » {T.RESET}")
         else:
-            print("Invalid option.Please try again.")
+            print(f"{T.GOLD} {T.BOLD} [X] Invalid option.Please try again. {T.RESET}")
             
             input()

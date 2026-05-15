@@ -6,6 +6,8 @@ from utils.dependenciesInstaller.depenInst import install_dependencies
 from appVaultConfig.vaultConfig import vaultConfig
 from utils.getIP.getIP import inv
 from appWatchDogDeploy.WatchdogDeploy import deployWatchdog
+from utils.colors import Theme as T
+from utils.generatePlayBook.generatePlaybook import generatePkgPlaybook
 
 menuMain = {
     "1": {
@@ -33,6 +35,26 @@ debugMenu = {
     },
 
     "2": {
+        "label": "[^] Deploy SSH Key",
+        "func": sshDeploy
+    },
+
+    "3": {
+        "label": "[^] Install Dependencies",
+        "func": lambda: install_dependencies
+    },
+
+    "4": {
+        "label": "[?] Check logs",
+        "func": lambda: None
+    },
+
+    "5": {
+        "label": "[?] Check Status of service",
+        "func": lambda: None
+    },
+
+    "6": {
         "label": "[Q] Back to Main",
         "func": lambda: None
     }
@@ -41,21 +63,16 @@ debugMenu = {
 
 confMenu = {
     "1": {
-        "label": "[^] Deploy SSH Key",
-        "func": sshDeploy
+        "label": "[?] Configure Ansible Vault",
+        "func": lambda: vaultConfig
     },
 
     "2": {
-        "label": "[^] Install Dependencies",
-        "func": lambda: install_dependencies()
+        "label": "[?] Modify Service Playbook",
+        "func": lambda: generatePkgPlaybook
     },
 
     "3": {
-        "label": "[?] Configure Ansible Vault",
-        "func": lambda: vaultConfig()
-    },
-
-    "4": {
         "label": "[Q] Back to Main",
         "func": lambda: None
     }
@@ -64,7 +81,7 @@ confMenu = {
 deployMenu = {
     "1": {
         "label": "[^] Inmediate Deployment",
-        "func": lambda: aptDeploy(input("Enter the packages to install as example nginx, git:"))
+        "func": lambda: aptDeploy(input(f"{T.BOLD} Enter the packages to install as example nginx, git » {T.RESET}"))
     },
 
     "2": {
