@@ -14,9 +14,7 @@ from utils.colors import Theme as T
 from utils.generatePlayBook.generatePlaybook import generatePkgPlaybook
 
 
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-
-root_dir = os.path.dirname(CURRENT_DIR)
+root_dir = os.path.dirname(os.path.abspath(__file__))
 
 menuMain = {
     "1": {
