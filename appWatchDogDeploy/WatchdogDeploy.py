@@ -9,12 +9,9 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from utils.colors import Theme as T
 from utils.logger.logger import loggingF
-from utils.checkRoot.checkRoot import checkRoot
-from utils.checkPermission.chkPerm import checkPermission
-from appVaultConfig.vaultConfig import vaultConfig
-from utils.generatePlayBook.generatePlaybook import generatePkgPlaybook
-from utils.checkService.checkService import getServiceStatus
-from utils.deployService.deployService import deployService
+from utils.config_manager import *
+from utils.deployment_engine import *
+from utils.sys_check import *
 
 def deployWatchdog():
 

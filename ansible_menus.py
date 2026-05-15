@@ -12,8 +12,7 @@ from utils.getIP.getIP import inv
 from appWatchDogDeploy.WatchdogDeploy import deployWatchdog
 from utils.colors import Theme as T
 from utils.generatePlayBook.generatePlaybook import generatePkgPlaybook
-from utils.checkLogs.checkLogs import Checklog
-from utils.checkServiceStatus.serviceStatus import getFullStatus
+from utils.sys_check import *
 
 root_dir = os.path.dirname(os.path.abspath(__file__))
 

@@ -4,6 +4,16 @@ import logging
 import logging.handlers
 from pathlib import Path
 
+def erHandler(error_message):
+
+    loggingF(4, error_message)
+
+    print("An error has occurred. Please check the logs for more details.")
+
+    input("")
+
+    exit(1)
+
 # projectRoot function
 # Objetive: Get the root path of the project.
 # To ease the imports and use.

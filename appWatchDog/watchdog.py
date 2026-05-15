@@ -17,10 +17,9 @@ sys.path.append(root_dir)
 
 # Custom Imports
 
-from utils.logger.logger import loggingF
-from utils.configR.configR import configGet
-from utils.errorsHandler.errorHandler import erHandler
-from utils.checkPermission.chkPerm import checkPermission
+from utils.observability import *
+from utils.config_manager import *
+from utils.sys_check import *
 
 # Path of the deployed hosts file
 # This file will be used to keep track of the hosts active on the network and modified
