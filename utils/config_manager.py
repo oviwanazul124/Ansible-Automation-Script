@@ -52,16 +52,16 @@ def vaultConfig():
 
     # Check if vault password file exists, if not create it and set permissiosn to 600
 
-    if not os.path.exists(vault_file_path):
+    if not os.path.exists(vault_pass_file_path):
 
         aPass = getpass.getpass(f"{T.BOLD} Enter master password for Ansible Vault » {T.RESET}")
 
         try:
-            with open(vault_file_path, 'w') as f:
+            with open(vault_pass_file_path, 'w') as f:
 
                 f.write(aPass)
 
-            os.chmod(vault_file_path, 0o600)
+            os.chmod(vault_pass_file_path, 0o600)
 
         except Exception as e:
             loggingF(4, f"Error creating vault password file: {e}")
@@ -73,7 +73,7 @@ def vaultConfig():
 
     # Check if vault file exists, if not create it with the SUDO password for the remote hosts and the SSH one.
 
-    if not os.path.exists(vault_pass_file_path):
+    if not os.path.exists(vault_file_path):
 
         loggingF(1,f"Creating new encrypted vault file: {vault_file_path}")
 
@@ -85,7 +85,7 @@ def vaultConfig():
 
         cmd = [
             "ansible-vault", "encrypt",
-            "--vault-password-file", vault_file_path,
+            "--vault-password-file", vault_pass_file_path,
             "--output", vault_file_path,
             "-"
         ]

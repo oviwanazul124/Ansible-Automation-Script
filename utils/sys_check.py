@@ -33,9 +33,6 @@ def Checklog():
 
         print(f"\n{T.BOLD} [!] Logs check interrupted by keyboard {T.RESET}")
 
-    except Exception as e:
-        print(f"{e}")
-
 def checkRoot():
 
     if os.geteuid() != 0:
