@@ -1,5 +1,3 @@
-from utils.observability import projectRoot
-from utils.config_manager import configGet
 from pathlib import Path
 
 # projectRoot function
