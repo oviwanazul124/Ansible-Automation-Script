@@ -25,6 +25,7 @@ def getLogsDir() -> Path:
 
 def setUpLogger():
 
+    getLogsDir()
 
     logger = logging.getLogger("logger")
 
