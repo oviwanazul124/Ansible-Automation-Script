@@ -3,7 +3,7 @@
 from pathlib import Path
 import logging
 import logging.handlers
-from paths import logsDir_path, logs_dir
+from paths import logsDir_path
 
 # getLogsDir function
 # Objetive: Get the logs directory
@@ -31,7 +31,7 @@ def setUpLogger():
     logger.setLevel(logging.DEBUG)
 
     handler = logging.handlers.TimedRotatingFileHandler(
-        logs_dir, when="midnight", interval=1 ,backupCount=7, encoding="utf-8"
+        logsDir_path, when="midnight", interval=1 ,backupCount=7, encoding="utf-8"
     )
 
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
