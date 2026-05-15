@@ -8,7 +8,6 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from utils.colors import Theme as T
-from utils.logger.logger import loggingF
 from utils.config_manager import *
 from utils.deployment_engine import *
 from utils.sys_check import *
