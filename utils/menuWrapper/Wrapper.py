@@ -6,8 +6,9 @@ import os
 # Custom Imports
 
 from ansible_menus import *
+from utils.colors import Theme as T
 
-#
+# Banner
 
 BANNER = r"""
 
@@ -23,14 +24,9 @@ BANNER = r"""
 
 ══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
       
-By Oviwanazul124 ══ Version 1.0
+By Ovi (; ══ Version 1.0
       
 """
-
-RED = '\033[31m'
-RESET = '\033[0m'
-BOLD = '\033[1m'
-
 # clear function
 # Objetive: Clear the terminal screen
 
@@ -47,9 +43,9 @@ def menuWrapper(title, menuDict):
 
         clear()
 
-        print(RED + BANNER + RESET)
+        print(T.RED + BANNER + T.RESET)
 
-        print(f"{BOLD}--- {title.upper()} ---{RESET}")
+        print(f"{T.BOLD}--- {title.upper()} ---{T.RESET}")
 
         print("══════════════════════════════════════════════════════════════════════════════════════")
 
@@ -59,7 +55,7 @@ def menuWrapper(title, menuDict):
 
         print("══════════════════════════════════════════════════════════════════════════════════════")
 
-        opt = input(f"\n{BOLD}Select an option » {RESET}")
+        opt = input(f"\n{T.BOLD}Select an option » {T.RESET}")
 
         if opt in menuDict:
 

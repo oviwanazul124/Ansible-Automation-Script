@@ -8,32 +8,32 @@ from utils.getIP.getIP import inv
 from appWatchDogDeploy.WatchdogDeploy import deployWatchdog
 
 menuMain = {
-    "[ 1 ]": {
-        "label": "🔍 Enter Debug Menu",
+    "1": {
+        "label": "[?] Enter Debug Menu",
         "func": "debugMenu"
     },
-    "[ 2 ]": {
-        "label": "Enter Configuration Menu",
+    "2": {
+        "label": "[~] Enter Configuration Menu",
         "func": "confMenu"
     },
-    "[ 3 ]": {
-        "label": "Enter Deployment Menu",
+    "3": {
+        "label": "[^]  Enter Deployment Menu",
         "func": "deployMenu"
     },
-    "[ 4 ]": {
-        "label": "Exit",
+    "4": {
+        "label": "[Q] Exit",
         "func": lambda: None
     }
 }
 
 debugMenu = {
     "1": {
-        "label": "Check devices actives in the network",
+        "label": "[?] Check devices actives in the network",
         "func": inv
     },
 
     "2": {
-        "label": "Back to Main",
+        "label": "[Q] Back to Main",
         "func": lambda: None
     }
 }
@@ -41,39 +41,39 @@ debugMenu = {
 
 confMenu = {
     "1": {
-        "label": "Deploy SSH Key",
+        "label": "[^] Deploy SSH Key",
         "func": sshDeploy
     },
 
     "2": {
-        "label": "Install Dependencies",
+        "label": "[^] Install Dependencies",
         "func": lambda: install_dependencies()
     },
 
     "3": {
-        "label": "Configure Ansible Vault",
+        "label": "[?] Configure Ansible Vault",
         "func": lambda: vaultConfig()
     },
 
     "4": {
-        "label": "Back to Main",
+        "label": "[Q] Back to Main",
         "func": lambda: None
     }
 }
 
 deployMenu = {
     "1": {
-        "label": "Inmediate Deployment",
+        "label": "[^] Inmediate Deployment",
         "func": lambda: aptDeploy(input("Enter the packages to install as example nginx, git:"))
     },
 
     "2": {
-        "label": "Automatic Deployment",
+        "label": "[^] Automatic Deployment",
         "func": lambda: deployWatchdog()
     },
 
     "3": {
-        "label": "Back to Main",
+        "label": "[Q] Back to Main",
         "func": lambda: None
     }
 }

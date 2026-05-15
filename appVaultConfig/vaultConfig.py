@@ -8,6 +8,7 @@ import subprocess
 
 # Custom Imports
 
+from utils.colors import Theme as T
 from utils.logger.logger import loggingF
 from utils.errorsHandler.errorHandler import erHandler
 
@@ -32,7 +33,7 @@ def vaultConfig():
 
     if not os.path.exists(vaultPassFile):
 
-        aPass = getpass.getpass("Enter master password for Ansible Vault: ")
+        aPass = getpass.getpass(f"{T.BOLD} Enter master password for Ansible Vault » {T.RESET}")
 
         try:
             with open(vaultPassFile, 'w') as f:
@@ -47,15 +48,19 @@ def vaultConfig():
 
         loggingF(1, f"Created vault password file: {vaultPassFile}")
 
+        print(f"{T.GREEN} {T.BOLD} [OK] Master Password stored {T.RESET}")
+
     # Check if vault file exists, if not create it with the SUDO password for the remote hosts and the SSH one.
 
     if not os.path.exists(vaultFile):
 
         loggingF(1,f"Creating new encrypted vault file: {vaultFile}")
 
-        depPass = getpass.getpass("Enter the SUDO password for remote hosts: ")
+        depPass = getpass.getpass(f"{T.BOLD} Enter the SUDO password for remote hosts » {T.RESET}")
 
         content = f"ansible_become_password: {depPass}\ninitial_device_password: {depPass}"
+
+        print(f"{T.GREEN} {T.BOLD} [OK] Sudo Password stored {T.RESET}")
 
         cmd = [
             "ansible-vault", "encrypt",
@@ -73,7 +78,7 @@ def vaultConfig():
                 check=True
             )
 
-            print("Vault file encrypted successfully.")
+            print(f"{T.GREEN} {T.BOLD} [OK] Vault file encrypted successfully. {T.RESET}")
 
         except subprocess.CalledProcessError as e:
 

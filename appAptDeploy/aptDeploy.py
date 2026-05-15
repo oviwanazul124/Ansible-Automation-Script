@@ -3,12 +3,12 @@
 import os
 import subprocess
 import sys
-import json
 
 # Custom Imports
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+from utils.colors import Theme as T
 from utils.logger.logger import loggingF
 from utils.configR.configR import configGet
 from utils.checkPermission.chkPerm import checkPermission
@@ -64,7 +64,8 @@ def aptDeploy(packg):
 
         subprocess.run(command, check=True, env=env)
         loggingF(1, "Apps installed correctly")
-        print("All the apps that was mentioned on the playbook was installed succesfully")
+        print(f"{T.GREEN} {T.BOLD} [OK] All the apps that was mentioned on the playbook was installed succesfully {T.RESET}")
 
     except subprocess.CalledProcessError as e:
         loggingF(4, f"Error running AppDeploy: {e}")
+        print(f"{T.GOLD} {T.BOLD} [X] There was an error deploying the apps, please checks the logs for more info {T.RESET}")

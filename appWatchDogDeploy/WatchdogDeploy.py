@@ -9,6 +9,7 @@ import yaml
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+from utils.colors import Theme as T
 from utils.logger.logger import loggingF
 from utils.checkRoot.checkRoot import checkRoot
 from utils.checkPermission.chkPerm import checkPermission
@@ -18,21 +19,28 @@ from appVaultConfig.vaultConfig import vaultConfig
 def generatePkgPlaybook(root_dir):
 
     playbook_dir = os.path.join(root_dir, "playbooks")
+
     playbook_path = os.path.join(playbook_dir, "InstallPackages.yml")
 
     if not os.path.exists(playbook_dir):
+
         os.makedirs(playbook_dir)
 
-    print("\n--- Configuración de Paquetes ---")
+    print(f"{T.BOLD} \n--- Configuración de Paquetes --- {T.RESET}")
+
     print("Enter the packages you want to create, separated by commas:")
+
     print("Example: vim, htop, curl, git")
     
-    user_input = input("Paquetes: ")
+    user_input = input(f"{T.BOLD} [?] Paquetes » {T.RESET}")
 
     pkg_list = [p.strip() for p in user_input.split(",") if p.strip()]
 
     if not pkg_list:
+
         loggingF(2, "There wasn't any packages specified creating a blank file.")
+
+        print(f"{T.GOLD} {T.BOLD} [!] There wasn't any package introduced, creating a blank file {T.RESET}")
         return
 
     playbook_data = [{
@@ -51,13 +59,20 @@ def generatePkgPlaybook(root_dir):
     }]
 
     try:
+
         with open(playbook_path, "w") as f:
+
             yaml.dump(playbook_data, f, default_flow_style=False, sort_keys=False)
-        loggingF(1, f"Playbook de paquetes generado en: {playbook_path}")
-        print(f"Playbook guardado con {len(pkg_list)} paquetes.")
+
+        loggingF(1, f"Playbook Saved in: {playbook_path}")
+
+        print(f"{T.GREEN} {T.BOLD} [OK] Playbook with the following packages {len(pkg_list)} has been saved. {T.RESET}")
+
     except Exception as e:
+
         erHandler(e)
-        print("Error creando el playbook de paquetes.")
+
+        print(f"{T.GOLD} {T.BOLD} [X] There was an error creating the files, please check the logs for more information. {T.RESET}")
 
 def deployWatchdog():
 
@@ -74,7 +89,6 @@ def deployWatchdog():
     serviceName = 'watchdog-Ansible'
 
     scriptPath = os.path.join(root_dir, "appWatchDog", "watchdog.py")
-
 
     unit_file_path = f"/etc/systemd/system/{serviceName}.service"
 
@@ -104,9 +118,9 @@ WantedBy=multi-user.target
 
     if existService == False:
     
-        print("This will add the watchdog service to the machine. Are you sure? (y/n)")
+        print(f"{T.GOLD} {T.BOLD} [!] This will add the watchdog service to the machine. Are you sure? (y/n) {T.RESET}")
 
-        answer = input().lower()
+        answer = input("» ").lower()
 
         if answer == 'y':
             
@@ -114,25 +128,29 @@ WantedBy=multi-user.target
                 
                 loggingF(1, "Vault files wasn't found, calling appVaultConfig to create them.")
             
-                print("There isn't a Ansible Vault configuration on this machine please configure it now")
+                print(f"{T.GOLD} {T.BOLD} [!] There isn't a Ansible Vault configuration on this machine please configure it now {T.RESET}")
                 
-                input("Press enter to continue...")
+                input(f"{T.BOLD} Press enter to continue » {T.RESET}")
                 
                 vaultConfig()
 
-            print("Checking all files and permissions...")
+                print(f"{T.GREEN} {T.BOLD} [OK] Ansible Vault Correctly configured {T.RESET}")
+
+            print(f"{T.BOLD} [?] Checking all files and permissions {T.RESET}")
 
             try:
 
                 checkPermission(invPath)
 
+                print(f"{T.GREEN} {T.BOLD} [OK] Permission checked and working correctly. {T.RESET}")
+
             except Exception as e:
 
                 loggingF(1, 'There was an error checking permissions: ' + str(e))
 
-                print("Error checking permissions, please check the logs for more information")
+                print(f"{T.GOLD} {T.BOLD} [X] Error checking permissions, please check the logs for more information {T.RESET}")
 
-                input("Press enter to end the program...")
+                input(f"{T.BOLD} Press enter to end the program » {T.RESET}")
 
                 sys.exit(1)
 
@@ -140,50 +158,105 @@ WantedBy=multi-user.target
 
                 checkRoot()
 
+                print(f"{T.GREEN} {T.BOLD} [OK] Script Running as root checked. {T.RESET}")
+
             except Exception as e:
 
                 loggingF(1, "There was an error checking for root permissions:" + str(e))
 
-                print("There was an error checking for root permissions, please check the logs for more information")
+                print(f"{T.GOLD} {T.BOLD} [X] There was an error checking for root permissions, please check the logs for more information {T.RESET}")
 
-                input("Press enter to end the program...")
+                input(f"{T.BOLD} Press enter to end the program » {T.RESET}")
 
                 sys.exit(1)
 
             generatePkgPlaybook(root_dir)
 
+            # Write Service 
+
             try:
-                
-                # Write Service 
+
+                print(f"{T.BOLD} [?] Trying to write the .service {T.RESET}")
 
                 loggingF(1, f"Writing service file to {unit_file_path}")
 
                 with open(unit_file_path, "w") as f:
                     f.write(service_config)
 
-                # Reload Daemon
-
-                loggingF(1, "Reloading system daemon...")
-
-                subprocess.run(["systemctl", "daemon-reload"], check=True)
-
-                # Enable Service on boot
-
-                loggingF(1, f"Enabling {serviceName} to start on boot...")
-                
-                subprocess.run(["systemctl", "enable", serviceName], check=True)
-
-                # Starting the service
-
-                loggingF(1, f"Trying to start the service {serviceName}")
-
-                subprocess.run(["systemctl", "restart", serviceName], check=True)
+                print(f"{T.BOLD} {T.GREEN} [OK] .service was written correctly.")
 
             except Exception as e:
 
-                print("There was an error deploying the service, please checks the logs for more information")
+                print(f"{T.GOLD} {T.BOLD} [X] There was an error writing the .service, please check the logs for more info. {T.RESET}")
 
-                loggingF(4, f"There was an error deploying the service: {e}")
+                loggingF(4, f"Error writing the .service: {e}")
+
+                input("» ")
+
+            # Reload Daemon
+
+            try:
+
+                loggingF(1, "Reloading system daemon...")
+
+                print(f"{T.BOLD} [?] Trying to reload the daemon {T.RESET}")
+
+                subprocess.run(["systemctl", "daemon-reload"], check=True)
+
+                print{f"{T.GREEN} {T.BOLD} [OK] Daemon reloaded successfully. {T.RESET}"}
+
+            except Exception as e:
+
+                print(f"{T.GOLD} {T.BOLD} [X] There was an error reloading the daemon, please check the logs for more info. {T.RESET}")
+
+                loggingF(4, f"Error reloading the daemon: {e}")
+
+                input("» ")                
+
+
+            # Enable Service on boot
+
+            try:
+
+                loggingF(1, f"Enabling {serviceName} to start on boot...")
+
+                print(f"{T.BOLD} [?] Enabling {serviceName} to start on boot {T.RESET}")
+                
+                subprocess.run(["systemctl", "enable", serviceName], check=True)
+
+                print(f"{T.GREEN} {T.BOLD} [OK] Service {serviceName} enabled on boot")
+
+            except Exception as e:
+
+                print(f"{T.GOLD} {T.BOLD} [X] There was an error enabling the {serviceName} on boot, please check the logs for more info. {T.RESET}")
+
+                loggingF(4, f"Error enabling the service on boot: {e}")
+
+                input("» ")    
+
+                pass
+
+            # Starting the service
+
+            try:
+
+                loggingF(1, f"Trying to start the service {serviceName}")
+
+                print(f"{T.BOLD} [?] Trying to start the service {T.RESET}")
+
+                subprocess.run(["systemctl", "restart", serviceName], check=True)
+
+                print(f"{T.GREEN} {T.BOLD} [OK] Service enabled correctly {T.RESET}")
+
+            except Exception as e:
+                
+                print(f"{T.GOLD} {T.BOLD} [X] There was an error enabling the {serviceName}, please check the logs for more info. {T.RESET}")
+
+                loggingF(4, f"Error enabling the service: {e}")
+
+                input("» ")    
+
+                pass
 
         else:
             pass
