@@ -6,10 +6,7 @@ import os
 
 from appWatchDogDeploy.WatchdogDeploy import deployWatchdog
 from utils.colors import Theme as T
-from utils.sys_check import *
-from utils.observability import *
-from utils.config_manager import *
-from utils.deployment_engine import *
+from utils.deployment_engine import inv, sshDeploy, install_dependencies, Checklog, getFullStatus, vaultConfig, generatePkgPlaybook, aptDeploy
 
 root_dir = os.path.dirname(os.path.abspath(__file__))
 
