@@ -103,20 +103,6 @@ WantedBy=multi-user.target
 
     existService = False
 
-    try:
-
-        if subprocess.run(
-            ["systemctl", 'list-unit-files', 'watchdog-Ansible.service'],
-            check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
-        ) == True:
-            existService = True
-    
-    except Exception as e:
-
-        loggingF(1, 'There was an error checking for the watchdog service: ' + str(e) )
-    
     if existService == False:
     
         print("This will add the watchdog service to the machine. Are you sure? (y/n)")
