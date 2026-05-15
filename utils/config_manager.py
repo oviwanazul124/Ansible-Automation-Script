@@ -50,6 +50,10 @@ def configGet(sectionC, optionC):
 
 def vaultConfig():
 
+    print("Hello")
+    print(vault_pass_file_path)
+    print(vault_file_path)
+
     # Check if vault password file exists, if not create it and set permissiosn to 600
 
     if not os.path.exists(vault_pass_file_path):
