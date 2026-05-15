@@ -3,6 +3,7 @@
 import sys
 import os
 import subprocess
+import yaml
 
 # Custom Imports
 
@@ -13,6 +14,50 @@ from utils.checkRoot.checkRoot import checkRoot
 from utils.checkPermission.chkPerm import checkPermission
 from utils.errorsHandler.errorHandler import erHandler
 from appVaultConfig.vaultConfig import vaultConfig
+
+def generatePkgPlaybook(root_dir):
+
+    playbook_dir = os.path.join(root_dir, "playbooks")
+    playbook_path = os.path.join(playbook_dir, "InstallPackages.yml")
+
+    if not os.path.exists(playbook_dir):
+        os.makedirs(playbook_dir)
+
+    print("\n--- Configuración de Paquetes ---")
+    print("Enter the packages you want to create, separated by commas:")
+    print("Example: vim, htop, curl, git")
+    
+    user_input = input("Paquetes: ")
+
+    pkg_list = [p.strip() for p in user_input.split(",") if p.strip()]
+
+    if not pkg_list:
+        loggingF(2, "There wasn't any packages specified creating a blank file.")
+        return
+
+    playbook_data = [{
+        "name": "Instalación Automática de Paquetes mediante Watchdog",
+        "hosts": "all",
+        "become": True,
+        "tasks": [
+            {
+                "name": "Asegurar que los paquetes están instalados",
+                "ansible.builtin.package": {
+                    "name": pkg_list,
+                    "state": "present"
+                }
+            }
+        ]
+    }]
+
+    try:
+        with open(playbook_path, "w") as f:
+            yaml.dump(playbook_data, f, default_flow_style=False, sort_keys=False)
+        loggingF(1, f"Playbook de paquetes generado en: {playbook_path}")
+        print(f"Playbook guardado con {len(pkg_list)} paquetes.")
+    except Exception as e:
+        erHandler(e)
+        print("Error creando el playbook de paquetes.")
 
 def deployWatchdog():
 
@@ -42,10 +87,15 @@ After=network.target
 User={username}
 Group={username}
 WorkingDirectory={root_dir}
+
+Environment=PYTHONPATH={root_dir}
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=PYTHONUNBUFFERED=1
+
 ExecStart={sys.executable} -u {scriptPath}
+
 Restart=always
 RestartSec=10
-Environment=PYTHONUNBUFFERED=1
 
 [Install]
 WantedBy=multi-user.target
@@ -114,7 +164,7 @@ WantedBy=multi-user.target
                 input("Press enter to end the program...")
 
                 sys.exit(1)
-            
+
             try:
                 
                 # Write Service 

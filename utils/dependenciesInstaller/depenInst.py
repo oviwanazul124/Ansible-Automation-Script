@@ -12,7 +12,7 @@ from utils.logger.logger import loggingF
 
 def install_dependencies():
 
-    dependencies = ["scapy"]
+    dependencies = ["scapy", "pyyaml"]
 
     for package in dependencies:
         
