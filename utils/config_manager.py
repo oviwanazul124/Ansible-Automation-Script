@@ -18,8 +18,8 @@ config = configparser.ConfigParser()
 
 # Paths to config.ini to solve bad imports
 
-baseDir = os.path.dirname(os.path.abspath(__file__))
-configPath = os.path.join(baseDir, '..', '..', 'config.ini')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+configPath = os.path.join(BASE_DIR, 'config.ini')
 
 # Read config.ini
 
