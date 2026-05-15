@@ -103,16 +103,13 @@ def getServiceStatus(service_name):
 
         return False
 
-def getFullStatus(service_name):
+def getFullStatus():
 
     try:
 
         # Ejecutamos 'systemctl status'
 
-        output = subprocess.check_output(['systemctl', 'status', service_name], 
-                                         
-                                         universal_newlines=True)
-        
+        output = subprocess.check_output(['systemctl', 'status', 'watchdog-Ansible'], universal_newlines=True)
         return output
     
     except subprocess.CalledProcessError as e:
