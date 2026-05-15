@@ -25,12 +25,6 @@ configPath = os.path.join(baseDir, '..', '..', 'config.ini')
 
 filesRead = config.read(configPath)
 
-# Exception to not reading .ini
-
-if not filesRead:
-    loggingF(4, f"No se pudo encontrar o leer el archivo config en: {configPath}")
-    exit(1)
-
 # configGet function
 # Objetive: Get values of the config.ini
 

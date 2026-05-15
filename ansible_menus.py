@@ -6,7 +6,9 @@ import os
 
 from appWatchDogDeploy.WatchdogDeploy import deployWatchdog
 from utils.colors import Theme as T
-from utils.deployment_engine import inv, sshDeploy, install_dependencies, Checklog, getFullStatus, vaultConfig, generatePkgPlaybook, aptDeploy
+from utils.deployment_engine import sshDeploy, install_dependencies, generatePkgPlaybook, aptDeploy
+from utils.sys_check import Checklog, getFullStatus
+from utils.config_manager import inv, vaultConfig
 
 root_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -34,17 +36,17 @@ menuMain = {
 debugMenu = {
     "1": {
         "label": "[?] Check devices actives in the network",
-        "func": inv()
+        "func": inv
     },
 
     "2": {
         "label": "[^] Deploy SSH Key",
-        "func": sshDeploy()
+        "func": sshDeploy
     },
 
     "3": {
         "label": "[^] Install Dependencies",
-        "func": lambda: install_dependencies()
+        "func": lambda: install_dependencies
     },
 
     "4": {
@@ -67,7 +69,7 @@ debugMenu = {
 confMenu = {
     "1": {
         "label": "[?] Configure Ansible Vault",
-        "func": lambda: vaultConfig()
+        "func": lambda: vaultConfig
     },
 
     "2": {
@@ -89,7 +91,7 @@ deployMenu = {
 
     "2": {
         "label": "[^] Automatic Deployment",
-        "func": lambda: deployWatchdog()
+        "func": lambda: deployWatchdog
     },
 
     "3": {
