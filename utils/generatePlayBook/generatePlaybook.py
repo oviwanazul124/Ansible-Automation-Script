@@ -66,6 +66,9 @@ def generatePkgPlaybook(root_dir):
         with open(playbook_path, "w") as f:
 
             yaml.dump(playbook_data, f, default_flow_style=False, sort_keys=False)
+            f.flush()        
+            os.fsync(f.fileno())
+
 
         loggingF(1, f"Playbook Saved in: {playbook_path}")
 
