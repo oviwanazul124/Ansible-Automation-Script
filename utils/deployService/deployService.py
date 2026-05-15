@@ -12,9 +12,9 @@ from utils.checkRoot.checkRoot import checkRoot
 
 def deployService(status):
 
-    print(root_dir)
-
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    print(root_dir)
 
     serviceName = 'watchdog-Ansible'
 
