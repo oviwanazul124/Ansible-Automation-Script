@@ -5,7 +5,7 @@ from pathlib import Path
 # To ease the imports and use.
 
 def projectRoot() -> Path:
-    return Path(__file__).resolve().parents[1]
+    return Path(__file__)
 
 # Project Root
 
