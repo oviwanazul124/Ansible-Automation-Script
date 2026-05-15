@@ -8,19 +8,19 @@ from utils.getIP.getIP import inv
 from appWatchDogDeploy.WatchdogDeploy import deployWatchdog
 
 menuMain = {
-    "[1]": {
-        "label": "Enter Debug Menu",
+    "[ 1 ]": {
+        "label": "🔍 Enter Debug Menu",
         "func": "debugMenu"
     },
-    "[2]": {
+    "[ 2 ]": {
         "label": "Enter Configuration Menu",
         "func": "confMenu"
     },
-    "[3]": {
+    "[ 3 ]": {
         "label": "Enter Deployment Menu",
         "func": "deployMenu"
     },
-    "[4]": {
+    "[ 4 ]": {
         "label": "Exit",
         "func": lambda: None
     }
