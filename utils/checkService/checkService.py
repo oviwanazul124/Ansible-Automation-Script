@@ -3,12 +3,15 @@ import subprocess
 def getServiceStatus(service_name):
     try:
         result = subprocess.run(
-            ['systemctl', 'is-active', service_name],
+            ['systemctl', 'list-unit-files', f'{service_name}.service'],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True
         )
-        return result.stdout.strip() == "active"
+        
+        exists = service_name in result.stdout
+        return exists
+        
     except Exception as e:
         print(f"Error checking service: {e}")
         return False

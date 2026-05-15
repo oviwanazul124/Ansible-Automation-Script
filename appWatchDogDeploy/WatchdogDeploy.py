@@ -90,8 +90,8 @@ def deployWatchdog():
 
             deployService(existService)
 
-        else:
+    else:
 
-            print(f"{T.GOLD} {T.BOLD} [X] The service is already running {T.RESET}")
+        print(f"{T.GOLD} {T.BOLD} [X] The service is already running {T.RESET}")
 
-            pass
+        pass
