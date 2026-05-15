@@ -7,10 +7,9 @@ import yaml
 
 # Custom Imports
 
-from utils.config_manager import *
-from utils.sys_check import *
+from utils.config_manager import configGet
 from utils.colors import Theme as T
-from utils.observability import *
+from utils.sys_check import loggingF, checkPermission, getServiceStatus, erHandler
 
 # install_dependencies function
 # Objetive: Install dependencies of the script
