@@ -42,3 +42,9 @@ def discovery():
         }
     }
     return inventory
+
+if __name__ == "__main__":
+    if len(sys.argv) == 2 and sys.argv[1] == '--list':
+        print(json.dumps(discovery()))
+    else:
+        print(json.dumps({'all': {'hosts': []}}))

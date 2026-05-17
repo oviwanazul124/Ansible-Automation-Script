@@ -118,8 +118,6 @@ def vaultConfig():
 
 def inv():
 
-    print("--- Inventory Script ---")
-
     checkPermission(inv_path)
 
     result = subprocess.run(["ansible-inventory", "-i", inv_path, "--list"], capture_output=True, text=True)
