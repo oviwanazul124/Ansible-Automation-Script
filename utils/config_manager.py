@@ -24,8 +24,6 @@ def configGet(sectionC, optionC):
     # Init configParser
 
     loggingF(1, f"Searching in config for section {sectionC} with value {optionC}")
-    
-    print(config_path)
 
     try:
         
