@@ -68,11 +68,21 @@ def sshDeploy():
 
         loggingF(4, f"Error running sshDeploy: {e}")
 
+# generatePkgPlaybook function
+# Objetive: Generate or regenerate the playbook destinated to be used
+# by the system daemon
+
 def generatePkgPlaybook():
+
+
+    # Check if the playbook directoy exists
+    # if not create it
 
     if not os.path.exists(playbook_dir):
 
         os.makedirs(playbook_dir)
+
+    # Check if the playbook was created before if it is the case remove it
 
     if os.path.exists(playbook_path):
 
@@ -87,6 +97,8 @@ def generatePkgPlaybook():
     user_input = input(f"{T.BOLD} [?] Paquetes » {T.RESET}")
 
     pkg_list = [p.strip() for p in user_input.split(",") if p.strip()]
+
+    # If it is not included any package create a blank file
 
     if not pkg_list:
 
@@ -109,6 +121,8 @@ def generatePkgPlaybook():
             }
         ]
     }]
+
+    # Put the info in it
 
     try:
 

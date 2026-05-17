@@ -79,3 +79,4 @@ def deployWatchdog():
         print(f"{T.GOLD} {T.BOLD} [X] The service is already running {T.RESET}")
 
         pass
+    

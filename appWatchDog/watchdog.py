@@ -210,7 +210,7 @@ def monitorCycle():
 		except Exception as e:
 			loggingF(4, f"Error in monitor cycle: {str(e)}")
 
-		time.sleep(10)
+		time.sleep(500)
 
 if __name__ == "__main__":
 	monitorCycle()
