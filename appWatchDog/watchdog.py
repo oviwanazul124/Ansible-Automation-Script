@@ -15,9 +15,9 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Custom Imports
 
-from utils.observability import loggingF
+from utils.observability import loggingF, erHandler
 from utils.config_manager import configGet
-from utils.sys_check import erHandler, checkPermission
+from utils.sys_check import checkPermission
 from paths import *
 
 # Path of the deployed hosts file
