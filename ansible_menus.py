@@ -1,38 +1,57 @@
 # Custom Imports
 
-from appAptDeploy.aptDeploy import aptDeploy
-from appSHHDeploy.sshDeploy import sshDeploy
-from utils.dependenciesInstaller.depenInst import install_dependencies
-from appVaultConfig.vaultConfig import vaultConfig
-from utils.getIP.getIP import inv
+from appWatchDogDeploy.WatchdogDeploy import deployWatchdog
+from utils.deployment_engine import sshDeploy, install_dependencies, generatePkgPlaybook, aptDeploy
+from utils.sys_check import Checklog, getFullStatus
+from utils.config_manager import inv, vaultConfig
 
 menuMain = {
     "1": {
-        "label": "Enter Debug Menu",
+        "label": "[?] Enter Debug Menu",
         "func": "debugMenu"
     },
     "2": {
-        "label": "Enter Configuration Menu",
+        "label": "[~] Enter Configuration Menu",
         "func": "confMenu"
     },
     "3": {
-        "label": "Enter Deployment Menu",
+        "label": "[^]  Enter Deployment Menu",
         "func": "deployMenu"
     },
     "4": {
-        "label": "Exit",
+        "label": "[Q] Exit",
         "func": lambda: None
     }
 }
 
 debugMenu = {
     "1": {
-        "label": "Check devices actives in the network",
+        "label": "[?] Check devices actives in the network",
         "func": inv
     },
 
     "2": {
-        "label": "Back to Main",
+        "label": "[^] Deploy SSH Key",
+        "func": sshDeploy
+    },
+
+    "3": {
+        "label": "[^] Install Dependencies",
+        "func": install_dependencies
+    },
+
+    "4": {
+        "label": "[?] Check logs",
+        "func": Checklog
+    },
+
+    "5": {
+        "label": "[?] Check Status of service",
+        "func": getFullStatus
+    },
+
+    "6": {
+        "label": "[Q] Back to Main",
         "func": lambda: None
     }
 }
@@ -40,39 +59,34 @@ debugMenu = {
 
 confMenu = {
     "1": {
-        "label": "Deploy SSH Key",
-        "func": sshDeploy
+        "label": "[?] Configure Ansible Vault",
+        "func": vaultConfig
     },
 
     "2": {
-        "label": "Install Dependencies",
-        "func": lambda: install_dependencies()
+        "label": "[?] Modify Service Playbook",
+        "func": generatePkgPlaybook
     },
 
     "3": {
-        "label": "Configure Ansible Vault",
-        "func": lambda: vaultConfig()
-    },
-
-    "4": {
-        "label": "Back to Main",
+        "label": "[Q] Back to Main",
         "func": lambda: None
     }
 }
 
 deployMenu = {
     "1": {
-        "label": "Inmediate Deployment",
-        "func": lambda: aptDeploy(input("Enter the packages to install as example nginx, git:"))
+        "label": "[^] Inmediate Deployment",
+        "func": aptDeploy
     },
 
     "2": {
-        "label": "Automatic Deployment",
-        "func": lambda: None
+        "label": "[^] Automatic Deployment",
+        "func": deployWatchdog
     },
 
     "3": {
-        "label": "Back to Main",
+        "label": "[Q] Back to Main",
         "func": lambda: None
     }
 }

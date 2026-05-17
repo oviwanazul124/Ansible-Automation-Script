@@ -11,16 +11,14 @@ import sys
 # Get the root folder for later usage and
 # to make easier the imports of the utils.
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-root_dir = os.path.abspath(os.path.join(current_dir, ".."))
-sys.path.append(root_dir)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Custom Imports
 
-from utils.logger.logger import loggingF
-from utils.configR.configR import configGet
-from utils.errorsHandler.errorHandler import erHandler
-from utils.checkPermission.chkPerm import checkPermission
+from utils.observability import loggingF, erHandler
+from utils.config_manager import configGet
+from utils.sys_check import checkPermission
+from paths import *
 
 # Path of the deployed hosts file
 # This file will be used to keep track of the hosts active on the network and modified
@@ -212,7 +210,7 @@ def monitorCycle():
 		except Exception as e:
 			loggingF(4, f"Error in monitor cycle: {str(e)}")
 
-		time.sleep(10)
+		time.sleep(500)
 
 if __name__ == "__main__":
 	monitorCycle()

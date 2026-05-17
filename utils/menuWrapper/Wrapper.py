@@ -5,8 +5,27 @@ import os
 
 # Custom Imports
 
-from ansible_menus import *
+from utils.colors import Theme as T
 
+# Banner
+
+BANNER = r"""
+
+ ▄▄▄       ███▄    █   ██████  ██▓ ▄▄▄▄    ██▓    ▓█████     ▄▄▄       █    ██ ▄▄▄█████▓ ▒█████   ███▄ ▄███▓ ▄▄▄     ▄▄▄█████▓ ██▓ ▒█████   ███▄    █ 
+▒████▄     ██ ▀█   █ ▒██    ▒ ▓██▒▓█████▄ ▓██▒    ▓█   ▀    ▒████▄     ██  ▓██▒▓  ██▒ ▓▒▒██▒  ██▒▓██▒▀█▀ ██▒▒████▄   ▓  ██▒ ▓▒▓██▒▒██▒  ██▒ ██ ▀█   █ 
+▒██  ▀█▄  ▓██  ▀█ ██▒░ ▓██▄   ▒██▒▒██▒ ▄██▒██░    ▒███      ▒██  ▀█▄  ▓██  ▒██░▒ ▓██░ ▒░▒██░  ██▒▓██    ▓██░▒██  ▀█▄ ▒ ▓██░ ▒░▒██▒▒██░  ██▒▓██  ▀█ ██▒
+░██▄▄▄▄██ ▓██▒  ▐▌██▒  ▒   ██▒░██░▒██░█▀  ▒██░    ▒▓█  ▄    ░██▄▄▄▄██ ▓▓█  ░██░░ ▓██▓ ░ ▒██   ██░▒██    ▒██ ░██▄▄▄▄██░ ▓██▓ ░ ░██░▒██   ██░▓██▒  ▐▌██▒
+ ▓█   ▓██▒▒██░   ▓██░▒██████▒▒░██░░▓█  ▀█▓░██████▒░▒████▒    ▓█   ▓██▒▒▒█████▓   ▒██▒ ░ ░ ████▓▒░▒██▒   ░██▒ ▓█   ▓██▒ ▒██▒ ░ ░██░░ ████▓▒░▒██░   ▓██░
+ ▒▒   ▓▒█░░ ▒░   ▒ ▒ ▒ ▒▓▒ ▒ ░░▓  ░▒▓███▀▒░ ▒░▓  ░░░ ▒░ ░    ▒▒   ▓▒█░░▒▓▒ ▒ ▒   ▒ ░░   ░ ▒░▒░▒░ ░ ▒░   ░  ░ ▒▒   ▓▒█░ ▒ ░░   ░▓  ░ ▒░▒░▒░ ░ ▒░   ▒ ▒ 
+  ▒   ▒▒ ░░ ░░   ░ ▒░░ ░▒  ░ ░ ▒ ░▒░▒   ░ ░ ░ ▒  ░ ░ ░  ░     ▒   ▒▒ ░░░▒░ ░ ░     ░      ░ ▒ ▒░ ░  ░      ░  ▒   ▒▒ ░   ░     ▒ ░  ░ ▒ ▒░ ░ ░░   ░ ▒░
+  ░   ▒      ░   ░ ░ ░  ░  ░   ▒ ░ ░    ░   ░ ░      ░        ░   ▒    ░░░ ░ ░   ░      ░ ░ ░ ▒  ░      ░     ░   ▒    ░       ▒ ░░ ░ ░ ▒     ░   ░ ░ 
+      ░  ░         ░       ░   ░   ░          ░  ░   ░  ░         ░  ░   ░                  ░ ░         ░         ░  ░         ░      ░ ░           ░ 
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+      
+By Ovi (; ══ Version 1.0
+      
+"""
 # clear function
 # Objetive: Clear the terminal screen
 
@@ -19,43 +38,51 @@ def clear():
 
 def menuWrapper(title, menuDict):
 
+    import ansible_menus
+
     while True:
 
         clear()
 
-        print(f'--- {title} ---')
+        print(T.RED + T.RESET)
+
+        print(f"{T.BOLD}--- {title.upper()} ---{T.RESET}")
+
+        print("══════════════════════════════════════════════════════════════════════════════════════")
 
         for key, value in menuDict.items():
 
             print(f'{key}. {value['label']}')
 
-        opt = input("\nSelect an option: ")
+        print("══════════════════════════════════════════════════════════════════════════════════════")
+
+        opt = input(f"\n{T.BOLD}Select an option » {T.RESET}")
 
         if opt in menuDict:
 
             item = menuDict[opt]
 
-            if item['label'] in ['Exit', 'Back to Main'] or item['func'] is None:
+            if item['label'] in ['[Q] Exit', '[Q] Back to Main'] or item['func'] is None:
                 
                 break
 
             if item['func'] == 'debugMenu':
 
-                menuWrapper("Debug Menu", debugMenu)
+                menuWrapper("Debug Menu", ansible_menus.debugMenu)
 
             elif item['func'] == 'confMenu':
 
-                menuWrapper("Configuration Menu", confMenu)
+                menuWrapper("Configuration Menu", ansible_menus.confMenu)
 
             elif item['func'] == 'deployMenu':
 
-                menuWrapper("Deploy Menu", deployMenu)
+                menuWrapper("Deploy Menu", ansible_menus.deployMenu)
             else:
 
                 item['func']()
 
-                input("\nPress Enter to continue...")
+                input(f"\n{T.BOLD} Press Enter to continue » {T.RESET}")
         else:
-            print("Invalid option.Please try again.")
+            print(f"{T.GOLD} {T.BOLD} [X] Invalid option.Please try again. {T.RESET}")
             
             input()
